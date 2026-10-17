@@ -1,99 +1,111 @@
-"use client";
+import { ArrowUpRight } from 'lucide-react';
+import { BookDemoButton } from './BookDemoButton';
+import { LogoMark } from './Logo';
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+// Point these at the service pages once they exist.
+const pieces = [
+  { title: 'LinkedIn Content', desc: 'Three posts a week in your voice.', href: '#sprint-linkedin-content' },
+  { title: 'Lead Generation', desc: 'Signal-based outreach from your profile.', href: '#sprint-lead-generation' },
+  { title: 'Email Outbound', desc: 'Cold email infrastructure in your name.', href: '#sprint-email-outbound' },
+];
+
+const pages = [
+  { label: 'Home', href: '#top' },
+  { label: 'Inside the sprint', href: '#services' },
+  { label: 'How it works', href: '#how-it-works' },
+  { label: 'Results', href: '#results' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'FAQ', href: '#faq' },
+];
 
 export function Footer() {
-	const columns = [
-		{
-			title: "Product",
-			links: [
-				{ name: "Find & Enrich Leads", href: "product" },
-				{ name: "Solutions", href: "solutions" },
-				{ name: "Workflow Builder", href: "how-it-works" },
-			],
-		},
-	];
+  return (
+    <footer id="get-started" className="pb-3 md:pb-4">
+      <div className="panel relative overflow-hidden bg-brand text-on-brand">
+        <div
+          aria-hidden="true"
+          className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-accent md:-right-10 md:-top-28 md:h-[300px] md:w-[300px]"
+        />
 
-	return (
-		<footer className="bg-[#F9F9F7] border-t border-[#E5E5E5] pt-20 pb-8">
-			<div className="max-w-[1200px] mx-auto px-6">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-					<motion.div
-						initial={{
-							opacity: 0,
-							y: 20,
-						}}
-						whileInView={{
-							opacity: 1,
-							y: 0,
-						}}
-						viewport={{
-							once: true,
-						}}
-						transition={{
-							duration: 0.5,
-						}}
-						className="col-span-1"
-					>
-						<Image
-							src="/logo.png"
-							alt="VeLeads Logo"
-							width={120}
-							height={40}
-							className="mb-4"
-						/>
-						<p className="text-[14px] text-[#6B6B6B] mb-8 leading-[1.6]">
-							The multi-channel sales engagement platform for B2B teams
-						</p>
-					</motion.div>
+        <div className="container-page relative flex flex-col items-center gap-6 pt-24 pb-12 text-center md:gap-8 md:pt-36 md:pb-16">
+          <h2 data-reveal className="display-xl max-w-[56rem]">
+            Start your 90 days.
+          </h2>
+          <p data-reveal className="lead max-w-[34rem] max-md:text-[1.0625rem]">
+            Book a 30-minute strategy call. We research 3 of your target accounts live.
+          </p>
+          <div data-reveal className="mt-2 -rotate-[4deg] transition-transform duration-500 ease-out-soft hover:rotate-0">
+            <BookDemoButton variant="dark" label="Claim a founding spot" />
+          </div>
+        </div>
 
-					{columns.map((col, i) => (
-						<motion.div
-							key={i}
-							initial={{
-								opacity: 0,
-								y: 20,
-							}}
-							whileInView={{
-								opacity: 1,
-								y: 0,
-							}}
-							viewport={{
-								once: true,
-							}}
-							transition={{
-								duration: 0.5,
-								delay: (i + 1) * 0.15,
-							}}
-						>
-							<h4 className="text-[11px] uppercase tracking-[0.2em] text-[#A0A0A0] mb-6 font-medium">
-								{col.title}
-							</h4>
-							<ul className="space-y-4">
-								{col.links.map((link, j) => (
-									<li key={j}>
-										<a
-											href={`#${link.href}`}
-											className="relative text-[14px] text-[#6B6B6B] hover:text-[#0F0F0F] transition-colors group inline-block"
-										>
-											{link.name}
-											<span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#0F0F0F] transition-all duration-300 group-hover:w-full" />
-										</a>
-									</li>
-								))}
-							</ul>
-						</motion.div>
-					))}
-				</div>
+        <div className="container-page relative flex flex-col gap-4 pb-12 md:pb-16">
+          <span className="text-center text-sm font-semibold">Need just one piece?</span>
+          <ul className="grid gap-3 sm:grid-cols-3">
+            {pieces.map((p) => (
+              <li key={p.title}>
+                <a
+                  href={p.href}
+                  className="group flex h-full items-start justify-between gap-4 rounded-lg bg-brand-hover p-4 md:p-5 transition-colors hover:bg-inverse-bg/30"
+                >
+                  <span className="flex flex-col gap-1">
+                    <span className="font-semibold">{p.title}</span>
+                    <span className="text-sm">{p.desc}</span>
+                  </span>
+                  <ArrowUpRight
+                    className="h-5 w-5 shrink-0 transition-transform duration-300 ease-out-soft group-hover:rotate-45"
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-				<div className="border-t border-[#E5E5E5] pt-8 flex flex-col md:flex-row justify-between items-center">
-					<p className="text-[13px] text-[#6B6B6B] mb-4 md:mb-0">
-						© 2026 VeLeads. All rights reserved.
-					</p>
-					<p className="text-[13px] text-[#6B6B6B]">Made for B2B sales teams</p>
-				</div>
-			</div>
-		</footer>
-	);
+        <div className="container-page relative grid grid-cols-2 gap-x-6 gap-y-10 border-t border-white/15 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:gap-12 md:py-14">
+          <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
+            <span className="heading-4">Inbound and outbound, engineered like software.</span>
+            <p className="max-w-[24rem] text-sm">
+              Veleads runs the 90-Day Pipeline Sprint for B2B founders: LinkedIn content, signal-based outreach and
+              email, built as one system you own.
+            </p>
+          </div>
+          <nav aria-label="Footer pages" className="flex flex-col gap-3">
+            <span className="text-[13px]">Pages</span>
+            {pages.map((p) => (
+              <a key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
+                {p.label}
+              </a>
+            ))}
+          </nav>
+          <nav aria-label="Footer services" className="flex flex-col gap-3">
+            <span className="text-[13px]">Services</span>
+            {pieces.map((p) => (
+              <a key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
+                {p.title}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        {/* Sized in container units so the lockup spans exactly the page container, edge to edge.
+            Text is 3.368em wide, mark 0.75em, gap 0.1em: 4.218em = 100cqw, so 1em ≈ 23.7cqw. */}
+        <div aria-hidden="true" className="container-page relative pb-3">
+          <div className="@container">
+            <div className="flex items-center gap-[2.37cqw]">
+              <LogoMark className="h-[17.8cqw] w-[17.8cqw] shrink-0 [&_rect]:fill-on-brand [&_path]:stroke-brand" />
+              <span className="font-display text-[23.7cqw] font-bold leading-[0.8] tracking-[-0.05em] text-on-brand">
+                veleads
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="container-page relative flex flex-col gap-2 border-t border-white/15 py-6 text-[13px] text-on-brand sm:flex-row sm:justify-between">
+          <span>© 2026 Veleads · The 90-Day Pipeline Sprint</span>
+          <span>Agents do the heavy lifting. People make it good.</span>
+        </div>
+      </div>
+    </footer>
+  );
 }

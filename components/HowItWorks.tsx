@@ -1,157 +1,204 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Fragment } from 'react';
-import { CampaignBuilderCanvas } from './CampaignBuilderCanvas';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef, type ReactNode } from 'react';
+import { BookDemoButton } from './BookDemoButton';
+import { useCardStack } from './ui/useCardStack';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+type Step = {
+  tags: string[];
+  title: string;
+  desc: string;
+  outcome: string;
+  outcomeLabel: string;
+  visual: ReactNode;
+};
+
+function Chip({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text shadow-sm">
+      {children}
+    </span>
+  );
+}
+
+function Checklist({ items }: { items: [string, boolean][] }) {
+  return (
+    <ul className="flex w-full max-w-[380px] flex-col gap-2">
+      {items.map(([label, done]) => (
+        <li key={label} className="flex items-center justify-between rounded-md bg-surface px-4 py-3 text-sm shadow-sm">
+          <span className="font-medium">{label}</span>
+          <span className={`flex items-center gap-2 ${done ? 'text-accent-text' : 'text-text-muted'}`}>
+            <span aria-hidden="true" className={`h-2 w-2 rounded-full ${done ? 'bg-mint-500' : 'bg-border-strong'}`} />
+            {done ? 'Done' : 'In progress'}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const steps: Step[] = [
+  {
+    tags: ['Days 1\u201330', 'Foundation'],
+    title: 'Find your buyers. Build the engine.',
+    desc: 'We research 3\u20134 ICPs and map your market, set up sending domains and mailboxes in your name, optimise your LinkedIn profile and start posting.',
+    outcome: '3\u20134 ICPs',
+    outcomeLabel: 'Researched and signed off with you',
+    visual: (
+      <div className="flex w-full flex-col items-center gap-5">
+        <div className="flex max-w-[420px] flex-wrap justify-center gap-2">
+          <Chip>B2B SaaS, 50 to 500 staff</Chip>
+          <Chip>Hiring SDRs</Chip>
+          <Chip>Recently funded</Chip>
+        </div>
+        <Checklist
+          items={[
+            ['Domains bought', true],
+            ['Mailboxes warming', false],
+            ['Profile optimised', true],
+            ['First posts live', true],
+          ]}
+        />
+      </div>
+    ),
+  },
+  {
+    tags: ['Days 31\u201360', 'Launch'],
+    title: 'Go live on LinkedIn and email.',
+    desc: 'Signal-based outreach goes live on both channels, your posts run three times a week, and we work ABM plays on your gold-tier accounts, typically around 200. Replies come to us; meetings land on your calendar.',
+    outcome: 'Top accounts',
+    outcomeLabel: 'Worked across LinkedIn and email',
+    visual: (
+      <ol className="flex w-full max-w-[360px] flex-col gap-3">
+        {['LinkedIn connection', 'Email, day 3', 'LinkedIn message, day 6', 'Email follow-up, day 10'].map((touch, i) => (
+          <li key={touch} className="flex items-center gap-3 rounded-md bg-surface px-4 py-3 text-sm shadow-sm">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-xs font-semibold text-on-brand">
+              {i + 1}
+            </span>
+            <span className="text-text-secondary">{touch}</span>
+          </li>
+        ))}
+      </ol>
+    ),
+  },
+  {
+    tags: ['Days 61\u201390', 'Focus'],
+    title: 'Double down on what books meetings.',
+    desc: 'We compare every ICP across both channels, pick the winner, and tune copy and content to it. On day 90 you get a review and a plan, then you decide: keep us on, or take the keys.',
+    outcome: '1 ICP',
+    outcomeLabel: 'Proven by real replies',
+    visual: (
+      <div className="flex w-full max-w-[380px] flex-col gap-4 rounded-lg bg-surface p-5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-text-muted">Replies by ICP</span>
+          <span className="text-xs text-text-muted">Day 75</span>
+        </div>
+        <ul className="flex flex-col gap-3">
+          {[
+            ['ICP A', 38, false],
+            ['ICP B', 86, true],
+            ['ICP C', 52, false],
+            ['ICP D', 24, false],
+          ].map(([name, w, win]) => (
+            <li key={name as string} className="flex items-center gap-3 text-sm">
+              <span className="w-12 shrink-0 font-medium">{name}</span>
+              <span className="h-3 flex-1 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
+                <span
+                  style={{ width: `${w}%` }}
+                  className={`block h-full rounded-full ${win ? 'bg-accent' : 'bg-brand-subtle'}`}
+                />
+              </span>
+              {win && <span className="text-xs font-semibold text-accent-text">Winner</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ),
+  },
+];
+
 export function HowItWorks() {
-  const steps = [
-  {
-    num: '01',
-    title: 'Find & Enrich',
-    desc: 'Discover and enrich prospects matching your ICP'
-  },
-  {
-    num: '02',
-    title: 'Qualify & Research',
-    desc: 'Score leads and gather context automatically'
-  },
-  {
-    num: '03',
-    title: 'Build Your Workflow',
-    desc: 'Define your sequence, assign channels, set timing'
-  },
-  {
-    num: '04',
-    title: 'Detect Opportunities',
-    desc: 'Track engagement and flag hot leads automatically'
-  }];
+  const root = useRef<HTMLElement>(null);
+  useCardStack(root, { selector: '[data-stack-card]' });
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      // Stacking only on desktop: on phones a card is taller than the screen.
+      mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+        const cards = gsap.utils.toArray<HTMLElement>('[data-stack-card]');
+        cards.forEach((card, i) => {
+          const next = cards[i + 1];
+          if (!next) return;
+          gsap.to(card.querySelector('[data-stack-inner]'), {
+            scale: 0.92,
+            ease: 'none',
+            scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 140px', scrub: true },
+          });
+        });
+      });
+    },
+    { scope: root },
+  );
 
   return (
-    <section
-      id="how-it-works"
-      className="py-[60px] md:py-[100px] bg-[#F9F9F7] overflow-hidden">
-      
-      <div className="max-w-[1200px] mx-auto px-6">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0
-          }}
-          viewport={{
-            once: true,
-            margin: '-100px'
-          }}
-          transition={{
-            duration: 0.5
-          }}
-          className="mb-16 text-center">
-          
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#A0A0A0] mb-4 font-medium">
-            HOW IT WORKS
-          </p>
-          <h2 className="text-4xl md:text-[40px] font-bold tracking-tight text-[#0F0F0F] mb-6">
-            From cold prospect to closed deal in one workflow
-          </h2>
-          <p className="text-lg text-[#6B6B6B] max-w-2xl mx-auto leading-[1.6] font-light">
-            Four steps. One platform. Zero manual work.
-          </p>
-        </motion.div>
-
-        {/* Horizontal Step Timeline */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {steps.map((step, i) =>
-          <motion.div
-            key={i}
-            initial={{
-              opacity: 0,
-              y: 20
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0
-            }}
-            viewport={{
-              once: true,
-              margin: '-100px'
-            }}
-            transition={{
-              duration: 0.4,
-              delay: i * 0.15
-            }}
-            className="flex flex-col items-start">
-            
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-2.5 h-2.5 rotate-45 bg-[#0F0F0F]" />
-                <p className="text-[11px] text-[#A0A0A0] font-medium">
-                  {step.num}
-                </p>
-              </div>
-              <h4 className="text-[18px] font-bold text-[#0F0F0F] mb-2">
-                {step.title}
-              </h4>
-              <p className="text-[14px] text-[#6B6B6B] leading-[1.6]">
-                {step.desc}
-              </p>
-            </motion.div>
-          )}
+    <section ref={root} id="how-it-works" className="py-16 md:py-36">
+      <div className="container-page flex flex-col gap-10 md:gap-12">
+        <div data-reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex max-w-[40rem] flex-col gap-5">
+            <h2 className="heading-1">
+              What happens in <span className="text-brand-text">your 90 days.</span>
+            </h2>
+            <p className="text-text-secondary">
+              A report every week, a call every two weeks. Days 1&ndash;30 produce few meetings by design: that&rsquo;s
+              when your profile, mailboxes and lists warm up.
+            </p>
+          </div>
+          <BookDemoButton variant="dark" className="shrink-0 self-start sm:self-auto" />
         </div>
 
-        {/* Campaign Builder Canvas */}
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0
-          }}
-          viewport={{
-            once: true,
-            margin: '-100px'
-          }}
-          transition={{
-            duration: 0.8
-          }}
-          className="w-full">
-          
-          <CampaignBuilderCanvas />
-        </motion.div>
-
-        {/* Feature Pills */}
-        <motion.div
-          initial={{
-            opacity: 0
-          }}
-          whileInView={{
-            opacity: 1
-          }}
-          viewport={{
-            once: true,
-            margin: '-100px'
-          }}
-          transition={{
-            duration: 0.5,
-            delay: 0.4
-          }}
-          className="flex items-center justify-center space-x-3 mt-12">
-          
-          {['Conditional Logic', 'Multi-Channel', 'Auto-Nurture'].map(
-            (pill, i) =>
-            <Fragment key={pill}>
-                <div className="bg-white border border-[#E5E5E5] rounded-full px-4 py-1.5 text-xs text-[#6B6B6B]">
-                  {pill}
+        <div className="flex flex-col gap-6">
+          {steps.map((step, i) => (
+            <article
+              key={step.title}
+              data-stack-card
+              className="md:sticky"
+              style={{ top: `${104 + i * 14}px` }}
+            >
+              <div
+                data-stack-inner
+                className="grid origin-top overflow-hidden rounded-xl bg-brand-subtle p-3 md:min-h-[460px] md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
+              >
+                <div className="flex items-center justify-center p-4 md:min-h-[280px] md:p-10">{step.visual}</div>
+                <div className="flex flex-col justify-between gap-8 rounded-lg bg-inverse-bg p-6 text-inverse-text max-md:order-first md:gap-10 md:p-8">
+                  <div className="flex flex-col gap-5">
+                    <div className="flex flex-wrap gap-2">
+                      {step.tags.map((tag) => (
+                        <span key={tag} className="rounded-full bg-white/10 px-3 py-1 text-[13px] font-medium">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 className="font-display text-[1.625rem] font-semibold leading-tight tracking-[-0.03em] md:text-[2rem]">
+                      {step.title}
+                    </h3>
+                    <p className="text-inverse-text-muted">{step.desc}</p>
+                  </div>
+                  <div className="flex flex-col gap-1 border-t border-white/10 pt-6 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+                    <span className="stat whitespace-nowrap text-accent max-sm:text-[2.25rem]">{step.outcome}</span>
+                    <span className="text-sm text-inverse-text-muted sm:max-w-[9rem] sm:text-right">{step.outcomeLabel}</span>
+                  </div>
                 </div>
-                {i < 2 && <span className="text-[#A0A0A0] text-xs">·</span>}
-              </Fragment>
-
-          )}
-        </motion.div>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
-    </section>);
-
+    </section>
+  );
 }

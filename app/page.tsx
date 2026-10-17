@@ -1,26 +1,33 @@
-'use client';
-
-import { CustomCursor } from '@/components/CustomCursor';
-import { FinalCTA } from '@/components/FinalCTA';
+import { CaseStudy } from '@/components/CaseStudy';
+import { Comparison } from '@/components/Comparison';
+import { FAQ } from '@/components/FAQ';
+import { ForWho } from '@/components/ForWho';
 import { Footer } from '@/components/Footer';
 import { Hero } from '@/components/Hero';
 import { HowItWorks } from '@/components/HowItWorks';
 import { Navigation } from '@/components/Navigation';
-import { ProblemSection } from '@/components/ProblemSection';
-import { SolutionSection } from '@/components/SolutionSection';
+import { Offer } from '@/components/Offer';
+import { ScrollReveal } from '@/components/ScrollReveal';
+import { Services } from '@/components/Services';
+import { SignalMarquee } from '@/components/SignalMarquee';
+
 export default function Home() {
   return (
-    <div className="relative w-full min-h-screen bg-main text-dark selection:bg-dark selection:text-white">
-      <CustomCursor />
+    <div className="relative w-full min-h-screen bg-surface text-text selection:bg-brand selection:text-on-brand">
+      <ScrollReveal />
       <Navigation />
-      <main>
+      <main className="w-full max-w-full overflow-x-clip">
         <Hero />
-        <ProblemSection />
-        <SolutionSection />
+        <CaseStudy />
+        <SignalMarquee />
+        <ForWho />
+        <Services />
         <HowItWorks />
-        <FinalCTA />
+        <Offer />
+        <Comparison />
+        <FAQ />
       </main>
       <Footer />
-    </div>);
-
+    </div>
+  );
 }

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "homepage",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "homepage-prod",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "start", "-p", "3100"],
+      "port": 3100
+    }
+  ]
+}
