@@ -64,7 +64,7 @@ export function Offer() {
             <ul className="flex flex-col gap-2 border-t border-white/10 pt-5 text-sm text-inverse-text-muted">
               <li>Less than one month of an SDR.</li>
               <li>Tools billed at cost, paid directly to vendors.</li>
-              <li>After day 90: month to month, or take the keys.</li>
+              <li>After day 90, go month to month or take the keys.</li>
             </ul>
 
             <div className="flex gap-3 rounded-lg bg-inverse-surface p-4">

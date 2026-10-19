@@ -34,11 +34,11 @@ const faqs = [
   },
   {
     q: 'Can I buy just one piece?',
-    a: 'Yes. LinkedIn Content, Lead Generation and Email infrastructure are also available on their own.',
+    a: 'Yes. LinkedIn Content, LinkedIn Outreach and Email Outbound are also available on their own.',
   },
   {
     q: 'Who owns everything?',
-    a: 'You do: domains, mailboxes, LinkedIn presence, lists, automations and content.',
+    a: 'You do. Domains, mailboxes, LinkedIn presence, lists, automations and content all stay in your name.',
   },
 ];
 
@@ -68,7 +68,7 @@ export function FAQ() {
             </h2>
 
             <div className="flex flex-col gap-4 rounded-xl bg-inverse-bg p-6 text-inverse-text md:p-7">
-              <span className="heading-4">Day 90: you choose.</span>
+              <span className="heading-4">On day 90, you choose.</span>
               <ul className="flex flex-col gap-3">
                 {choices.map(({ icon: Icon, title, body, tone }) => (
                   <li key={title} className="flex gap-4 rounded-lg bg-inverse-surface p-4">

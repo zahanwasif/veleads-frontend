@@ -89,7 +89,7 @@ const steps: Step[] = [
   {
     tags: ['Days 61\u201390', 'Focus'],
     title: 'Double down on what books meetings.',
-    desc: 'We compare every ICP across both channels, pick the winner, and tune copy and content to it. On day 90 you get a review and a plan, then you decide: keep us on, or take the keys.',
+    desc: 'We compare every ICP across both channels, pick the winner, and tune copy and content to it. On day 90 you get a review and a plan, then you decide whether to keep us on or take the keys.',
     outcome: '1 ICP',
     outcomeLabel: 'Proven by real replies',
     visual: (
@@ -155,8 +155,8 @@ export function HowItWorks() {
               What happens in <span className="text-brand-text">your 90 days.</span>
             </h2>
             <p className="text-text-secondary">
-              A report every week, a call every two weeks. Days 1&ndash;30 produce few meetings by design: that&rsquo;s
-              when your profile, mailboxes and lists warm up.
+              A report every week, a call every two weeks. Days 1&ndash;30 produce few meetings by design, because
+              that&rsquo;s when your profile, mailboxes and lists warm up.
             </p>
           </div>
           <BookDemoButton variant="dark" className="shrink-0 self-start sm:self-auto" />

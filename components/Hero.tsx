@@ -4,9 +4,10 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { CalendarDays, Check, ChevronsRight, Clock3 } from 'lucide-react';
 import { Fragment, useRef } from 'react';
-import { CALENDLY_CONFIGURE_HINT, getCalendlyUrl } from '@/lib/calendly';
+import { BookCallLink } from './BookCallLink';
 import { DomainForm } from './DomainForm';
 import { LogoMark } from './Logo';
+import { GridBackdrop } from './ui/GridBackdrop';
 import { Eyebrow } from './ui/Eyebrow';
 
 gsap.registerPlugin(useGSAP);
@@ -50,23 +51,6 @@ function Words({ text, className = '' }: { text: string; className?: string }) {
   );
 }
 
-function BookCallLink() {
-  const url = getCalendlyUrl();
-  const cls = 'font-semibold text-brand-text underline-offset-4 hover:underline';
-  if (!url) {
-    return (
-      <span className={`${cls} cursor-not-allowed`} title={CALENDLY_CONFIGURE_HINT}>
-        Book a strategy call &rarr;
-      </span>
-    );
-  }
-  return (
-    <a href={url} className={cls}>
-      Book a strategy call &rarr;
-    </a>
-  );
-}
-
 export function Hero() {
   const root = useRef<HTMLElement>(null);
 
@@ -102,12 +86,13 @@ export function Hero() {
 
   return (
     <section ref={root} id="top" className="pt-[72px]">
-      <div className="panel bg-bg pt-10 pb-52 md:pt-28 md:pb-64">
+      <div className="panel relative isolate overflow-hidden bg-bg pt-10 pb-52 md:pt-28 md:pb-64">
+        <GridBackdrop />
         <div className="container-page flex flex-col items-center text-center">
           <span data-hero-eyebrow>
             <Eyebrow>
               <span>
-                For AI &amp; SaaS founders<span className="max-[380px]:hidden">, pre-seed to Series A</span>
+                For B2B AI &amp; SaaS founders<span className="max-[380px]:hidden">, seed to Series A</span>
               </span>
             </Eyebrow>
           </span>

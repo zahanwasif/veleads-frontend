@@ -2,21 +2,39 @@
 
 import { ArrowUpRight, Loader2 } from 'lucide-react';
 import { useId, useState } from 'react';
+import type { Finding } from '@/lib/deliverability';
 import { normalizeDomain } from '@/lib/domain';
-import { ReportDialog } from './ReportDialog';
+import { normalizeLinkedInProfile } from '@/lib/linkedin';
+import { offers, type OfferId } from '@/lib/offers';
+import { ReportDialog, type Subject } from './ReportDialog';
 
-type Site = { domain: string; favicon: string | null };
-
-export function DomainForm() {
+/**
+ * The pill form that starts every free offer: a website (homepage, Email Outbound)
+ * or a LinkedIn profile URL (the LinkedIn services). It validates, then opens the popup.
+ */
+export function DomainForm({ offerId = 'sprint-plan', inputId = 'hero-domain' }: { offerId?: OfferId; inputId?: string }) {
+  const offer = offers[offerId];
   const id = useId();
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
-  const [site, setSite] = useState<Site | null>(null);
+  const [subject, setSubject] = useState<Subject | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (checking) return;
+
+    if (offer.input === 'linkedin') {
+      const profile = normalizeLinkedInProfile(value);
+      if (!profile) {
+        setError('Paste your LinkedIn profile link, like linkedin.com/in/yourname');
+        return;
+      }
+      setError(null);
+      setSubject({ kind: 'linkedin', label: `in/${profile.handle}`, linkedinUrl: profile.url });
+      return;
+    }
+
     const domain = normalizeDomain(value);
     if (!domain) {
       setError('Enter your company’s website, like acme.com');
@@ -26,14 +44,27 @@ export function DomainForm() {
     setChecking(true);
     try {
       // Confirm the website exists (and grab its favicon) before opening the popup.
-      const res = await fetch(`/api/site-check?domain=${encodeURIComponent(domain)}`);
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error ?? 'check failed');
-      if (!data?.found) {
+      // The Email Outbound offer also runs a live DNS check to show in the popup.
+      const [site, dns] = await Promise.all([
+        fetch(`/api/site-check?domain=${encodeURIComponent(domain)}`).then(async (r) => ({ ok: r.ok, data: await r.json() })),
+        offerId === 'deliverability-check'
+          ? fetch(`/api/deliverability-check?domain=${encodeURIComponent(domain)}`)
+              .then((r) => (r.ok ? r.json() : null))
+              .catch(() => null)
+          : null,
+      ]);
+      if (!site.ok) throw new Error(site.data?.error ?? 'check failed');
+      if (!site.data?.found) {
         setError(`We couldn’t find ${domain}. Check the spelling and try again.`);
         return;
       }
-      setSite({ domain, favicon: data.favicon ?? null });
+      setSubject({
+        kind: 'domain',
+        label: domain,
+        domain,
+        favicon: site.data.favicon ?? null,
+        findings: (dns?.findings as Finding[] | undefined) ?? undefined,
+      });
     } catch {
       setError('We couldn’t check that website right now. Please try again.');
     } finally {
@@ -43,8 +74,8 @@ export function DomainForm() {
 
   return (
     <form onSubmit={submit} noValidate className="flex w-full max-w-[34rem] flex-col items-center gap-2">
-      <label htmlFor="hero-domain" className="sr-only">
-        Your company website
+      <label htmlFor={inputId} className="sr-only">
+        {offer.inputLabel}
       </label>
       <div
         className={`flex w-full flex-col gap-2 rounded-[34px] border bg-surface p-2 shadow-md transition-[border-color,box-shadow] focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15 sm:flex-row sm:items-center sm:rounded-full sm:pl-6 ${
@@ -52,13 +83,13 @@ export function DomainForm() {
         }`}
       >
         <input
-          id="hero-domain"
+          id={inputId}
           type="text"
           inputMode="url"
           autoComplete="url"
           autoCapitalize="none"
           spellCheck={false}
-          placeholder="yourcompany.com"
+          placeholder={offer.placeholder}
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
@@ -66,7 +97,7 @@ export function DomainForm() {
           }}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="h-[52px] w-full min-w-0 shrink-0 bg-transparent sm:w-auto sm:flex-1 px-4 text-center text-base text-text placeholder:text-text-muted focus:outline-none focus-visible:outline-none sm:px-0 sm:text-left"
+          className="h-[52px] w-full min-w-0 shrink-0 bg-transparent px-4 text-center text-base text-text placeholder:text-text-muted focus:outline-none focus-visible:outline-none sm:w-auto sm:flex-1 sm:px-0 sm:text-left"
         />
         <button
           type="submit"
@@ -83,7 +114,7 @@ export function DomainForm() {
             </>
           ) : (
             <>
-              <span className="flex-1 text-center">See your 90 days</span>
+              <span className="flex-1 text-center">{offer.button}</span>
               <span
                 aria-hidden="true"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-on-brand text-brand transition-transform duration-500 ease-out-soft group-hover:rotate-45"
@@ -99,7 +130,7 @@ export function DomainForm() {
           {error}
         </p>
       )}
-      {site && <ReportDialog domain={site.domain} favicon={site.favicon} onClose={() => setSite(null)} />}
+      {subject && <ReportDialog offerId={offerId} subject={subject} onClose={() => setSubject(null)} />}
     </form>
   );
 }

@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type LogoProps = {
   inverse?: boolean;
   className?: string;
@@ -22,8 +24,8 @@ export function LogoMark({ size = 36, className }: { size?: number; className?: 
 
 export function Logo({ inverse = false, className = "" }: LogoProps) {
   return (
-    <a
-      href="#top"
+    <Link
+      href="/"
       aria-label="Veleads home"
       className={`inline-flex min-h-11 items-center gap-2.5 rounded-full ${className}`}
     >
@@ -33,6 +35,6 @@ export function Logo({ inverse = false, className = "" }: LogoProps) {
       >
         veleads
       </span>
-    </a>
+    </Link>
   );
 }

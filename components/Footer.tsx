@@ -1,21 +1,19 @@
 import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { services } from '@/lib/services';
 import { BookDemoButton } from './BookDemoButton';
 import { LogoMark } from './Logo';
 
-// Point these at the service pages once they exist.
-const pieces = [
-  { title: 'LinkedIn Content', desc: 'Three posts a week in your voice.', href: '#sprint-linkedin-content' },
-  { title: 'Lead Generation', desc: 'Signal-based outreach from your profile.', href: '#sprint-lead-generation' },
-  { title: 'Email Outbound', desc: 'Cold email infrastructure in your name.', href: '#sprint-email-outbound' },
-];
+const pieces = services.map((s) => ({ title: s.title, desc: s.short, href: `/services/${s.slug}` }));
 
 const pages = [
-  { label: 'Home', href: '#top' },
-  { label: 'Inside the sprint', href: '#services' },
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Results', href: '#results' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Home', href: '/' },
+  { label: 'Inside the sprint', href: '/#services' },
+  { label: 'How it works', href: '/#how-it-works' },
+  { label: 'Results', href: '/#results' },
+  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Playbooks', href: '/playbooks' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 export function Footer() {
@@ -44,7 +42,7 @@ export function Footer() {
           <ul className="grid gap-3 sm:grid-cols-3">
             {pieces.map((p) => (
               <li key={p.title}>
-                <a
+                <Link
                   href={p.href}
                   className="group flex h-full items-start justify-between gap-4 rounded-lg bg-brand-hover p-4 md:p-5 transition-colors hover:bg-inverse-bg/30"
                 >
@@ -56,7 +54,7 @@ export function Footer() {
                     className="h-5 w-5 shrink-0 transition-transform duration-300 ease-out-soft group-hover:rotate-45"
                     aria-hidden="true"
                   />
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -66,24 +64,24 @@ export function Footer() {
           <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
             <span className="heading-4">Inbound and outbound, engineered like software.</span>
             <p className="max-w-[24rem] text-sm">
-              Veleads runs the 90-Day Pipeline Sprint for B2B founders: LinkedIn content, signal-based outreach and
-              email, built as one system you own.
+              Veleads runs the 90-Day Pipeline Sprint for B2B founders, with LinkedIn content, signal-based outreach
+              and email built as one system you own.
             </p>
           </div>
           <nav aria-label="Footer pages" className="flex flex-col gap-3">
             <span className="text-[13px]">Pages</span>
             {pages.map((p) => (
-              <a key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
+              <Link key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
                 {p.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <nav aria-label="Footer services" className="flex flex-col gap-3">
             <span className="text-[13px]">Services</span>
             {pieces.map((p) => (
-              <a key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
+              <Link key={p.href} href={p.href} className="w-fit py-1 text-base transition-opacity hover:opacity-70 md:text-lg">
                 {p.title}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>

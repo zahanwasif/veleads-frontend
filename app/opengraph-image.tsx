@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 // Social share card (also used for Twitter/X via the metadata in layout.tsx).
-export const alt = 'Veleads: Stop prospecting. Start taking sales calls.';
+export const alt = 'Veleads. Stop prospecting. Start taking sales calls.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -35,7 +35,7 @@ export default function Image() {
             <span style={{ color: '#5EEAD4' }}>Start taking sales calls.</span>
           </div>
           <div style={{ fontSize: 32, color: '#C9CBEA' }}>
-            The 90-Day Pipeline Sprint for AI &amp; SaaS founders.
+            The 90-Day Pipeline Sprint for B2B AI &amp; SaaS founders.
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 import { Stack_Sans_Headline } from "next/font/google";
 import "./globals.css";
@@ -6,12 +7,19 @@ const stackSans = Stack_Sans_Headline({
   variable: "--font-stack-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  // Next has no metrics for this font, so it can't build a size-adjusted fallback; use plain system fonts instead.
+  adjustFontFallback: false,
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
+const GTM_ID = "GTM-KW5JLKLF";
+// Only production builds report to Tag Manager, so local development never pollutes analytics.
+const loadGtm = process.env.NODE_ENV === "production";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://veleads.io";
-const title = "Veleads: The 90-Day Pipeline Sprint for AI & SaaS founders";
+const title = "Veleads | The 90-Day Pipeline Sprint for B2B AI & SaaS founders";
 const description =
-  "Stop prospecting. Start taking sales calls. A done-for-you 90-day sprint on LinkedIn and email for AI & SaaS founders, pre-seed to Series A. Outreach live by day 31, or your next month is free.";
+  "Stop prospecting. Start taking sales calls. A done-for-you 90-day sprint on LinkedIn and email for B2B AI & SaaS founders, seed to Series A. Outreach live by day 31, or your next month is free.";
 
 // favicon.ico, icon.svg, apple-icon.png and opengraph-image.tsx in app/ are picked up automatically.
 export const metadata: Metadata = {
@@ -49,7 +57,21 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=switzer@500,600,700&display=swap"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      {loadGtm && <GoogleTagManager gtmId={GTM_ID} />}
+      <body className="min-h-full flex flex-col">
+        {/* Tag Manager fallback for visitors with JavaScript turned off. */}
+        {loadGtm && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        )}
+        {children}
+      </body>
     </html>
   );
 }

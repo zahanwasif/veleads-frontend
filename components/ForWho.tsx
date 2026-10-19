@@ -2,7 +2,7 @@ import { Check, X } from 'lucide-react';
 import { BookDemoButton } from './BookDemoButton';
 
 const forYou = [
-  'You run an AI or SaaS business, pre-seed to Series A',
+  'You run a B2B AI or SaaS business, seed to Series A',
   'You, the founder, still do the selling',
   'You don’t have an SDR team yet, or don’t want to build one',
   'You sell to other businesses, and one deal is worth a real conversation',

@@ -54,7 +54,7 @@ function Them({ text, who }: { text: string; who: string }) {
     <span className="flex items-start gap-2.5 text-sm text-text-muted md:text-base">
       <X className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} aria-hidden="true" />
       <span>
-        <span className="sr-only">{who}: </span>
+        <span className="sr-only">{who}. </span>
         {text}
       </span>
     </span>
@@ -68,7 +68,7 @@ function Us({ text }: { text: string }) {
         <Check className="h-3 w-3" strokeWidth={3} aria-hidden="true" />
       </span>
       <span>
-        <span className="sr-only">Veleads sprint: </span>
+        <span className="sr-only">Veleads sprint. </span>
         {text}
       </span>
     </span>
@@ -114,11 +114,16 @@ export function Comparison() {
                 <li key={row.label} data-stack className="flex flex-col gap-2.5 rounded-lg bg-surface p-4 shadow-[0_-8px_24px_rgba(16,18,51,0.06)]">
                   <span className="text-xs font-semibold uppercase tracking-[1.2px] text-text-muted">{row.label}</span>
                   <Us text={row.us} />
-                  <p className="text-sm text-text-muted">
-                    <span className="font-medium">SDR:</span> {row.sdr}
-                    <span aria-hidden="true"> · </span>
-                    <span className="font-medium">Agency:</span> {row.agency}
-                  </p>
+                  <div className="flex flex-col gap-1.5 text-sm text-text-muted">
+                    <p className="flex items-baseline gap-2">
+                      <span className="shrink-0 rounded bg-surface-sunken px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide">SDR</span>
+                      {row.sdr}
+                    </p>
+                    <p className="flex items-baseline gap-2">
+                      <span className="shrink-0 rounded bg-surface-sunken px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide">Agency</span>
+                      {row.agency}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ul>

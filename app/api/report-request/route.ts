@@ -1,5 +1,6 @@
 import { normalizeDomain } from '@/lib/domain';
 import { LeadSchema } from '@/lib/lead';
+import { normalizeLinkedInProfile } from '@/lib/linkedin';
 
 // Light abuse guard: in-memory, per server instance.
 const recent = new Map<string, number[]>();
@@ -25,10 +26,20 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return Response.json({ error: parsed.error.issues[0]?.message ?? 'Invalid request' }, { status: 400 });
   }
-  const domain = normalizeDomain(parsed.data.domain);
-  if (!domain) return Response.json({ error: 'Invalid company website' }, { status: 400 });
+  const { domain: rawDomain, linkedinUrl: rawLinkedIn, ...rest } = parsed.data;
+  const domain = rawDomain ? normalizeDomain(rawDomain) : undefined;
+  if (domain === null) return Response.json({ error: 'Invalid company website' }, { status: 400 });
+  const linkedin = rawLinkedIn ? normalizeLinkedInProfile(rawLinkedIn) : undefined;
+  if (linkedin === null) return Response.json({ error: 'Invalid LinkedIn profile URL' }, { status: 400 });
 
-  const lead = { ...parsed.data, domain, submittedAt: new Date().toISOString(), source: 'homepage-report-popup' };
+  // `offer` tells your automation which report to send.
+  const lead = {
+    ...rest,
+    domain,
+    linkedinUrl: linkedin?.url,
+    submittedAt: new Date().toISOString(),
+    source: request.headers.get('referer') ?? undefined,
+  };
 
   // Forward to your CRM / automation (HubSpot workflow, Zapier, Make, n8n…) when configured.
   const webhook = process.env.REPORT_WEBHOOK_URL;

@@ -1,12 +1,20 @@
 'use client';
 
-import { Check, ChevronDown, Loader2, Mail, X } from 'lucide-react';
+import { AlertTriangle, Check, ChevronDown, Loader2, Mail, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { createPortal } from 'react-dom';
+import type { Finding } from '@/lib/deliverability';
 import { DEAL_SIZES, LeadSchema, ROLES, TIMELINES } from '@/lib/lead';
+import { offers, type OfferId } from '@/lib/offers';
 import { BookDemoButton } from './BookDemoButton';
 
 type Stage = 'research' | 'form' | 'done';
+
+/** What the visitor entered, already validated. */
+export type Subject =
+  | { kind: 'domain'; label: string; domain: string; favicon: string | null; findings?: Finding[] }
+  | { kind: 'linkedin'; label: string; linkedinUrl: string };
 type Errors = Partial<Record<'fullName' | 'email' | 'role' | 'form', string>>;
 
 function Select({
@@ -101,28 +109,33 @@ function TextField({
   );
 }
 
-function SiteIcon({ domain, favicon }: { domain: string; favicon: string | null }) {
+function SubjectIcon({ subject }: { subject: Subject }) {
   return (
     <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-surface">
-      {favicon ? (
+      {subject.kind === 'linkedin' ? (
+        <span className="font-display text-sm font-bold text-brand-text">in</span>
+      ) : subject.favicon ? (
         // eslint-disable-next-line @next/next/no-img-element -- data: URL from our own site check
-        <img src={favicon} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+        <img src={subject.favicon} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
       ) : (
-        <span className="font-display text-sm font-bold uppercase text-brand-text">{domain.charAt(0)}</span>
+        <span className="font-display text-sm font-bold uppercase text-brand-text">{subject.domain.charAt(0)}</span>
       )}
     </span>
   );
 }
 
 export function ReportDialog({
-  domain,
-  favicon,
+  offerId,
+  subject,
   onClose,
 }: {
-  domain: string;
-  favicon: string | null;
+  offerId: OfferId;
+  subject: Subject;
   onClose: () => void;
 }) {
+  const offer = offers[offerId];
+  const label = subject.label;
+  const findings = subject.kind === 'domain' ? subject.findings : undefined;
   const id = useId();
   const panel = useRef<HTMLDivElement>(null);
   const [stage, setStage] = useState<Stage>('research');
@@ -131,12 +144,7 @@ export function ReportDialog({
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const steps = [
-    `Reading ${domain}`,
-    'Mapping your ICP',
-    'Finding buyers showing signals',
-    'Curating your target list',
-  ];
+  const steps = offer.steps(label);
 
   // Research animation: tick steps off one by one, then show the form.
   useEffect(() => {
@@ -171,7 +179,9 @@ export function ReportDialog({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const payload = {
-      domain,
+      offer: offerId,
+      domain: subject.kind === 'domain' ? subject.domain : undefined,
+      linkedinUrl: subject.kind === 'linkedin' ? subject.linkedinUrl : undefined,
       fullName: form.fullName,
       email: form.email,
       role: form.role || undefined,
@@ -198,6 +208,8 @@ export function ReportDialog({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? 'Something went wrong. Please try again.');
+      // For conversion tracking in Tag Manager. No personal details go into the data layer.
+      sendGTMEvent({ event: 'generate_lead', offer: offerId, role: parsed.data.role });
       setStage('done');
     } catch (err) {
       setErrors({ form: err instanceof Error ? err.message : 'Something went wrong. Please try again.' });
@@ -233,10 +245,10 @@ export function ReportDialog({
         </button>
 
         <div className="flex items-center gap-3 pr-12">
-          <SiteIcon domain={domain} favicon={favicon} />
+          <SubjectIcon subject={subject} />
           <div className="flex min-w-0 flex-col">
-            <span className="eyebrow text-brand-text">Your 90-day plan</span>
-            <span className="truncate text-sm font-semibold text-text">{domain}</span>
+            <span className="eyebrow text-brand-text">{offer.dialogEyebrow}</span>
+            <span className="truncate text-sm font-semibold text-text">{label}</span>
           </div>
         </div>
         <div className="mt-3 h-1 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
@@ -249,7 +261,7 @@ export function ReportDialog({
         {stage === 'research' && (
           <div className="mt-6 flex flex-col gap-5" aria-live="polite">
             <h2 id={`${id}-title`} className="heading-3">
-              Getting to know {domain}&hellip;
+              Getting to know {label}&hellip;
             </h2>
             <ol className="flex flex-col gap-2">
               {steps.map((s, i) => {
@@ -284,12 +296,29 @@ export function ReportDialog({
           <form onSubmit={submit} noValidate className="mt-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <h2 id={`${id}-title`} className="heading-3">
-                Where should we send your report?
+                {offer.formTitle}
               </h2>
-              <p className="text-sm text-text-secondary">
-                Your ICP, a starter list of target accounts and a 90-day plan for {domain}.
-              </p>
+              <p className="text-sm text-text-secondary">{offer.formBody(label)}</p>
             </div>
+            {findings && (
+              <ul className="flex flex-col gap-1.5 rounded-lg bg-bg p-3" aria-label="What we found">
+                {findings.map((f) => (
+                  <li key={f.label} className="flex items-start gap-2.5 text-sm">
+                    {f.ok ? (
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">
+                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden="true" />
+                      </span>
+                    ) : (
+                      <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-danger" strokeWidth={2} aria-hidden="true" />
+                    )}
+                    <span className={f.ok ? 'text-text' : 'font-medium text-text'}>
+                      <span className="sr-only">{f.ok ? 'Good. ' : 'Needs fixing. '}</span>
+                      {f.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <TextField
               id={`${id}-name`}
               label="Full name"
@@ -305,7 +334,7 @@ export function ReportDialog({
               type="email"
               value={form.email}
               onChange={(v) => setForm({ ...form, email: v })}
-              placeholder={`jane@${domain}`}
+              placeholder={subject.kind === 'domain' ? `jane@${subject.domain}` : 'jane@yourcompany.com'}
               autoComplete="email"
               error={errors.email}
             />
@@ -330,7 +359,7 @@ export function ReportDialog({
               />
               <Select
                 id={`${id}-timeline`}
-                label="Outbound live by"
+                label="Looking to start"
                 options={TIMELINES}
                 value={form.timeline}
                 onChange={(v) => setForm({ ...form, timeline: v })}
@@ -345,7 +374,7 @@ export function ReportDialog({
               className="mt-1 flex h-[52px] items-center justify-center gap-2 rounded-full bg-brand px-6 text-base font-semibold text-on-brand transition-colors hover:bg-brand-hover disabled:opacity-80"
             >
               {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Mail className="h-4 w-4" aria-hidden="true" />}
-              {submitting ? 'Sending' : 'Send my report'}
+              {submitting ? 'Sending' : offer.submit}
             </button>
           </form>
         )}
@@ -357,7 +386,7 @@ export function ReportDialog({
             </span>
             <div className="flex flex-col gap-2">
               <h2 id={`${id}-title`} className="heading-3">
-                Your report is on its way.
+                {offer.doneTitle}
               </h2>
               <p className="text-text-secondary">
                 Check your inbox at <span className="font-semibold text-text">{form.email}</span>.
