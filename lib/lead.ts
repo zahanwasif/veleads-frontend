@@ -33,6 +33,9 @@ export const LeadSchema = z.object({
   role: z.enum(ROLES, { message: 'Pick your role' }),
   dealSize: z.enum(DEAL_SIZES).optional(),
   timeline: z.enum(TIMELINES).optional(),
+  // Page the form was submitted from, passed on to HubSpot for attribution.
+  pageUri: z.string().url().max(2000).optional(),
+  pageName: z.string().max(300).optional(),
 }).refine((l) => l.domain || l.linkedinUrl, { message: 'Missing website or LinkedIn profile', path: ['form'] });
 
 export type Lead = z.infer<typeof LeadSchema>;

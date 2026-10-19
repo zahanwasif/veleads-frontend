@@ -1,5 +1,6 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Stack_Sans_Headline } from "next/font/google";
 import "./globals.css";
 
@@ -13,8 +14,10 @@ const stackSans = Stack_Sans_Headline({
 });
 
 const GTM_ID = "GTM-KW5JLKLF";
-// Only production builds report to Tag Manager, so local development never pollutes analytics.
-const loadGtm = process.env.NODE_ENV === "production";
+// Only production builds load Tag Manager and HubSpot tracking, so local development never pollutes analytics.
+const loadTracking = process.env.NODE_ENV === "production";
+// HubSpot tracking code: sets the `hubspotutk` cookie that links form submissions to page views.
+const HUBSPOT_PORTAL_ID = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://veleads.io";
 const title = "Veleads | The 90-Day Pipeline Sprint for B2B AI & SaaS founders";
@@ -57,10 +60,10 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=switzer@500,600,700&display=swap"
         />
       </head>
-      {loadGtm && <GoogleTagManager gtmId={GTM_ID} />}
+      {loadTracking && <GoogleTagManager gtmId={GTM_ID} />}
       <body className="min-h-full flex flex-col">
         {/* Tag Manager fallback for visitors with JavaScript turned off. */}
-        {loadGtm && (
+        {loadTracking && (
           <noscript>
             <iframe
               src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
@@ -71,6 +74,13 @@ export default function RootLayout({
           </noscript>
         )}
         {children}
+        {loadTracking && HUBSPOT_PORTAL_ID && (
+          <Script
+            id="hs-script-loader"
+            src={`https://js.hs-scripts.com/${HUBSPOT_PORTAL_ID}.js`}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

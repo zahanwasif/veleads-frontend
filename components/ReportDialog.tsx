@@ -187,6 +187,8 @@ export function ReportDialog({
       role: form.role || undefined,
       dealSize: form.dealSize || undefined,
       timeline: form.timeline || undefined,
+      pageUri: window.location.href.split('#')[0],
+      pageName: document.title,
     };
     const parsed = LeadSchema.safeParse(payload);
     if (!parsed.success) {

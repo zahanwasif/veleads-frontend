@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { services } from '@/lib/services';
 import { BookDemoButton } from './BookDemoButton';
+import { CookieSettingsButton } from './CookieSettingsButton';
 import { LogoMark } from './Logo';
 
 const pieces = services.map((s) => ({ title: s.title, desc: s.short, href: `/services/${s.slug}` }));
@@ -100,7 +101,10 @@ export function Footer() {
         </div>
 
         <div className="container-page relative flex flex-col gap-2 border-t border-white/15 py-6 text-[13px] text-on-brand sm:flex-row sm:justify-between">
-          <span>© 2026 Veleads · The 90-Day Pipeline Sprint</span>
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>© 2026 Veleads · The 90-Day Pipeline Sprint</span>
+            <CookieSettingsButton />
+          </span>
           <span>Agents do the heavy lifting. People make it good.</span>
         </div>
       </div>
