@@ -1,6 +1,7 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { SITE_URL } from "@/lib/site-url";
 import { Stack_Sans_Headline } from "next/font/google";
 import "./globals.css";
 
@@ -19,14 +20,13 @@ const loadTracking = process.env.NODE_ENV === "production";
 // HubSpot tracking code: sets the `hubspotutk` cookie that links form submissions to page views.
 const HUBSPOT_PORTAL_ID = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID;
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://veleads.io";
 const title = "Veleads | The 90-Day Pipeline Sprint for B2B AI & SaaS founders";
 const description =
   "Stop prospecting. Start taking sales calls. A done-for-you 90-day sprint on LinkedIn and email for B2B AI & SaaS founders, seed to Series A. Outreach live by day 31, or your next month is free.";
 
 // favicon.ico, icon.svg, apple-icon.png and opengraph-image.tsx in app/ are picked up automatically.
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title,
   description,
   applicationName: "Veleads",
