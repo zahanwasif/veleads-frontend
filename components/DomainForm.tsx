@@ -73,7 +73,14 @@ export function DomainForm({ offerId = 'sprint-plan', inputId = 'hero-domain' }:
   }
 
   return (
-    <form onSubmit={submit} noValidate className="flex w-full max-w-[34rem] flex-col items-center gap-2">
+    // data-hs-do-not-collect: the server already sends this lead to HubSpot, so HubSpot's
+    // script must not capture the form a second time.
+    <form
+      onSubmit={submit}
+      noValidate
+      data-hs-do-not-collect="true"
+      className="flex w-full max-w-[34rem] flex-col items-center gap-2"
+    >
       <label htmlFor={inputId} className="sr-only">
         {offer.inputLabel}
       </label>

@@ -295,7 +295,7 @@ export function ReportDialog({
         )}
 
         {stage === 'form' && (
-          <form onSubmit={submit} noValidate className="mt-6 flex flex-col gap-4">
+          <form onSubmit={submit} noValidate data-hs-do-not-collect="true" className="mt-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <h2 id={`${id}-title`} className="heading-3">
                 {offer.formTitle}
