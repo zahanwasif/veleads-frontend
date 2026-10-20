@@ -22,7 +22,7 @@ const HUBSPOT_PORTAL_ID = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID;
 
 const title = "Veleads | The 90-Day Pipeline Sprint for B2B AI & SaaS founders";
 const description =
-  "Stop prospecting. Start taking sales calls. A done-for-you 90-day sprint on LinkedIn and email for B2B AI & SaaS founders, seed to Series A. Outreach live by day 31, or your next month is free.";
+  "Stop prospecting, start taking sales calls. A done-for-you 90-day LinkedIn and email sprint for B2B AI & SaaS founders. Outreach live by day 31.";
 
 // favicon.ico, icon.svg, apple-icon.png and opengraph-image.tsx in app/ are picked up automatically.
 export const metadata: Metadata = {

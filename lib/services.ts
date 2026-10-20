@@ -38,7 +38,7 @@ export const services: Service[] = [
     summary:
       'Three text posts a week in your voice, from one 30-minute call a month. We optimise your profile, engage with your buyers’ posts, and capture everyone who engages.',
     metaDescription:
-      'Done-for-you LinkedIn content for B2B AI & SaaS founders. Three text posts a week in your voice from one 30-minute call a month, plus profile optimisation and engagement with your buyers.',
+      'Done-for-you LinkedIn content for B2B founders. Three text posts a week in your voice from one 30-minute monthly call, plus profile and engagement work.',
     eyebrow: 'LinkedIn Content',
     headline: 'Three LinkedIn posts a week, in your voice.',
     headlineAccent: 'We write them. You approve.',
@@ -78,7 +78,7 @@ export const services: Service[] = [
     summary:
       'Outreach from your own LinkedIn profile to accounts showing buying signals. We start the conversation and book the call. You just show up.',
     metaDescription:
-      'Signal-based LinkedIn outreach for B2B AI & SaaS founders. We reach accounts showing buying signals from your own profile, run the conversation and book calls on your calendar.',
+      'Signal-based LinkedIn outreach for B2B AI & SaaS founders. We message accounts showing buying signals from your profile and book calls on your calendar.',
     eyebrow: 'LinkedIn Outreach',
     headline: 'Reach buyers when they’re ready.',
     headlineAccent: 'Then we book the call.',
@@ -123,7 +123,7 @@ export const services: Service[] = [
     summary:
       'Cold email infrastructure in your name, with secondary domains, warmed mailboxes and monitored deliverability. Inside the sprint, we write and run the campaigns on it too.',
     metaDescription:
-      'Cold email infrastructure for B2B AI & SaaS founders. Secondary domains in your name, warmed mailboxes, SPF, DKIM and DMARC, and ongoing deliverability monitoring.',
+      'Cold email infrastructure for B2B founders. Secondary domains in your name, warmed mailboxes, SPF, DKIM and DMARC, and ongoing deliverability monitoring.',
     eyebrow: 'Email Outbound',
     headline: 'Cold email that reaches the inbox.',
     headlineAccent: 'Your main domain stays safe.',
