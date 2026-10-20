@@ -1,9 +1,12 @@
-import { Clock3, Mail, PenLine, Radar } from 'lucide-react';
+import { ArrowUpRight, Clock3, Terminal } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { BookDemoButton } from '@/components/BookDemoButton';
 import { PageShell } from '@/components/PageShell';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { GridBackdrop } from '@/components/ui/GridBackdrop';
+import { listPlaybooks, topicDetails } from '@/lib/playbooks';
+import { getService } from '@/lib/services';
 
 const title = 'Playbooks | Veleads';
 const description =
@@ -17,29 +20,17 @@ export const metadata: Metadata = {
   twitter: { title, description },
 };
 
-// Planned playbooks. Each becomes a link once it's published.
-const playbooks = [
+// Planned playbooks for topics that don't have a published one yet. Remove an entry once its playbook is live.
+const upcoming = [
   {
-    icon: Mail,
-    topic: 'Email Outbound',
-    title: 'Cold email infrastructure that stays out of spam',
-    body: 'Domains, mailboxes, authentication and warm-up, the way we set it up for every client.',
-  },
-  {
-    icon: Radar,
-    topic: 'LinkedIn Outreach',
+    topic: 'linkedin-outreach' as const,
     title: 'Signal-based LinkedIn outreach from a founder profile',
     body: 'Which signals we track, how we write the first message, and how we keep accounts safe.',
   },
-  {
-    icon: PenLine,
-    topic: 'LinkedIn Content',
-    title: 'A founder content system that runs on one call a month',
-    body: 'How one 30-minute interview turns into three posts a week in your own voice.',
-  },
 ];
 
-export default function PlaybooksPage() {
+export default async function PlaybooksPage() {
+  const published = await listPlaybooks();
   return (
     <PageShell>
       <section className="pt-[72px]">
@@ -61,25 +52,64 @@ export default function PlaybooksPage() {
       <section aria-labelledby="playbooks-title" className="py-16 md:py-28">
         <div className="container-page flex flex-col gap-10">
           <h2 id="playbooks-title" data-reveal className="heading-1">
-            First playbooks, <span className="text-brand-text">coming soon.</span>
+            Read the playbooks, <span className="text-brand-text">then decide.</span>
           </h2>
           <ul className="grid gap-3 md:grid-cols-3">
-            {playbooks.map(({ icon: Icon, topic, title, body }) => (
-              <li key={title} data-reveal className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-md bg-brand-subtle">
-                    <Icon className="h-5 w-5 text-brand-text" strokeWidth={2} aria-hidden="true" />
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-medium text-text-muted">
-                    <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Coming soon
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-brand-text">{topic}</span>
-                <h3 className="heading-4">{title}</h3>
-                <p className="text-text-secondary">{body}</p>
-              </li>
-            ))}
+            {published.map((p) => {
+              const { label, service } = topicDetails(p.topic);
+              return (
+                <li key={p.slug} data-reveal>
+                  <Link
+                    href={`/playbooks/${p.slug}`}
+                    className="group flex h-full flex-col gap-4 rounded-xl border border-border bg-surface p-6 transition-[translate,box-shadow] duration-300 ease-out-soft hover:shadow-[0_12px_28px_rgba(16,18,51,0.08)] motion-safe:hover:-translate-y-1"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-md bg-brand-subtle">
+                        {service ? (
+                          <service.icon className="h-5 w-5 text-brand-text" strokeWidth={2} aria-hidden="true" />
+                        ) : (
+                          <Terminal className="h-5 w-5 text-brand-text" strokeWidth={2} aria-hidden="true" />
+                        )}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted">
+                        <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
+                        {p.readingMinutes} min read
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold text-brand-text">{label}</span>
+                    <h3 className="heading-4">{p.title}</h3>
+                    <p className="text-text-secondary">{p.summary}</p>
+                    <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                      Read the playbook
+                      <ArrowUpRight
+                        className="h-4 w-4 transition-transform duration-300 ease-out-soft group-hover:rotate-45"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+            {upcoming.map(({ topic, title, body }) => {
+              const service = getService(topic);
+              return (
+                <li key={title} data-reveal className="flex flex-col gap-4 rounded-xl border border-dashed border-border bg-surface p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    {service && (
+                      <span className="flex h-10 w-10 items-center justify-center rounded-md bg-surface-sunken">
+                        <service.icon className="h-5 w-5 text-text-muted" strokeWidth={2} aria-hidden="true" />
+                      </span>
+                    )}
+                    <span className="rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-medium text-text-muted">
+                      Coming soon
+                    </span>
+                  </div>
+                  {service && <span className="text-sm font-semibold text-text-muted">{service.title}</span>}
+                  <h3 className="heading-4">{title}</h3>
+                  <p className="text-text-secondary">{body}</p>
+                </li>
+              );
+            })}
           </ul>
 
           <div data-reveal className="flex flex-col items-start gap-4 rounded-xl bg-inverse-bg p-7 text-inverse-text md:flex-row md:items-center md:justify-between md:p-10">

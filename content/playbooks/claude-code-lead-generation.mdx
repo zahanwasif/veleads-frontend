@@ -1,0 +1,167 @@
+export const meta = {
+  title: 'Using Claude Code for lead generation and enrichment',
+  summary:
+    'How to turn a raw list of companies into researched, scored and enriched leads with Claude Code, step by step, with the prompts and guardrails we use.',
+  description:
+    'A step-by-step guide to lead generation and enrichment with Claude Code. Set up a project, connect data sources, score ICP fit, find buying signals and contacts, and export to your CRM.',
+  topic: 'gtm-engineering',
+  author: 'abdullah-liaqat',
+  published: '2026-10-20',
+  readingMinutes: 10,
+}
+
+Claude Code is Anthropic’s AI agent that works in your terminal. It reads and writes files, runs scripts and connects to other tools. For lead generation, that means you can hand it a spreadsheet of companies and a clear description of your buyer, and have it research, score and enrich every row, while you review the results.
+
+This playbook walks through the workflow we use, from a raw list to leads ready for outreach.
+
+## What can Claude Code do in lead generation?
+
+It is good at the slow, repetitive research steps that used to take an SDR days.
+
+- Reading a company’s website and summarising what they sell and to whom
+- Scoring each company against your ideal customer profile, with a reason
+- Finding buying signals such as open roles, launches and funding news
+- Calling data provider APIs to find decision makers and verify emails
+- Cleaning, merging and deduplicating lists
+- Drafting first lines from the signals it found
+- Exporting results to a CSV or straight into your CRM
+
+It doesn’t replace judgement. You still decide who to target, and a person should check anything that goes out under your name.
+
+## Step 1. Set up a project folder
+
+Install Claude Code by following Anthropic’s Claude Code docs, then create a folder for this workflow. Keep inputs, instructions and outputs separate, so every run is easy to check.
+
+```txt
+lead-gen/
+  CLAUDE.md          instructions Claude reads at the start of every session
+  input/accounts.csv the raw list of companies
+  output/            enriched files, one per run
+  .env               API keys, never shared or committed
+```
+
+## Step 2. Write your ICP into CLAUDE.md
+
+CLAUDE.md is a file Claude Code reads automatically when you start it in a folder. Put your ideal customer profile and your rules in it, so every step works from the same definition.
+
+```md
+# Lead research rules
+
+## Ideal customer
+- B2B AI or SaaS companies, seed to Series A
+- 10 to 150 employees, selling to other businesses
+- Founder still involved in sales, no SDR team yet
+
+## Scoring (0 to 3)
+- 3 = matches every point above
+- 2 = matches most, one unknown
+- 1 = weak match
+- 0 = not a fit (B2C, agency, enterprise)
+
+## Rules
+- Every fact needs a source URL in the output
+- Write "unknown" instead of guessing
+- Never visit or scrape LinkedIn
+```
+
+## Step 3. Connect your data sources
+
+Claude Code can use other tools through MCP servers, which are plug-ins that give it access to things like web search, your CRM or a data provider. Add the ones you need with the `claude mcp add` command, or let it call a provider’s API from a small script.
+
+| Job | Typical source |
+| --- | --- |
+| Company research | Web search and the company’s own website |
+| Contacts and emails | A data provider such as Apollo, through its API |
+| Email verification | A verification service, through its API |
+| Saving results | Your CRM, for instance HubSpot through its MCP server |
+
+<Callout tone="warning" title="Keep API keys out of prompts">
+Store keys in the .env file and have scripts read them from there. Never paste a key into a chat, and add .env to your .gitignore.
+</Callout>
+
+## Step 4. Clean the list and test on 10 rows
+
+Start every run small. Ask Claude Code to clean the file, then process the first 10 rows only, and check them by hand before running the rest.
+
+```txt
+Read input/accounts.csv. Normalise company domains, remove duplicates
+and rows without a domain, and save the result to output/clean.csv.
+Then research only the first 10 companies using the rules in CLAUDE.md
+and save them to output/sample.csv. Stop and show me the results.
+```
+
+If the sample is wrong, fix the rules in CLAUDE.md, not the output. Then the next run is right too.
+
+## Step 5. Research and score each company
+
+Once the sample looks right, run the research across the whole list. For each company, Claude Code reads the website and records a short summary, an ICP score with a reason, and the source pages it used.
+
+```txt
+For every company in output/clean.csv, visit its website and add these
+columns. what_they_sell, who_they_sell_to, employee_estimate,
+icp_score (0 to 3), score_reason, sources. Follow CLAUDE.md. Save to
+output/scored.csv and report how many scored 2 or 3.
+```
+
+<OfferCta
+  offer="sprint-plan"
+  id="playbook-mid-form"
+  title="Rather skip the setup?"
+  body="Enter your website and we’ll send your ICP and a starter list of target accounts, researched with this same kind of workflow."
+/>
+
+## Step 6. Find buying signals
+
+Fit tells you who could buy. Signals tell you who might buy now. For accounts that scored 2 or 3, ask Claude Code to look for recent, dated evidence.
+
+- Open roles on the careers page that relate to your product
+- Funding announcements or rapid hiring
+- Product launches, new markets or new leadership
+- Blog posts or talks about the problem you solve
+
+Ask it to record the date and the URL for every signal, and to skip anything older than six months.
+
+## Step 7. Find and verify contacts
+
+For each qualified account, find the people who would buy, usually the founder and the head of the relevant team. Use a data provider’s API for names, titles and emails rather than guessing email patterns, then run every address through a verification service.
+
+Keep only verified emails for cold outreach. Unverified addresses cause bounces, and bounces damage your sender reputation, which is covered in our [cold email deliverability playbook](/playbooks/cold-email-deliverability).
+
+## Step 8. Draft first lines, then review them
+
+With a signal for each account, Claude Code can draft a personal first line for every contact. Treat these as drafts. Read each one, check the fact behind it, and rewrite anything that sounds generic or overconfident.
+
+```txt
+For each contact in output/contacts.csv, write one first line under
+20 words that mentions the most recent signal for their company.
+Use only facts from the signal column. Add the line in a new column.
+```
+
+## Step 9. Export to your CRM or sequencer
+
+Save the final file as a CSV for your sending tool, or ask Claude Code to create the contacts and companies in your CRM through its MCP connection. Include the signal, source URL and ICP score as properties, so whoever does the outreach can see why each lead is on the list.
+
+## How do you make it repeatable?
+
+Once the workflow works, save each step’s prompt as a reusable command, and keep the rules in CLAUDE.md up to date as you learn which accounts reply. Claude Code can also run without the interactive session using `claude -p`, which lets you schedule a weekly signal refresh for your account list.
+
+## What guardrails matter most?
+
+- **Check sources.** AI can state wrong facts confidently. Requiring a URL for every claim makes errors easy to catch.
+- **Respect each site’s terms.** Don’t scrape LinkedIn or sites that forbid it. Use official APIs and data providers.
+- **Handle personal data carefully.** Collect only what you need for outreach, keep it secure, and follow GDPR when you contact people in the UK and EU.
+- **Watch costs.** API calls and data credits add up. Test on small batches and check usage before full runs.
+
+## Frequently asked questions
+
+### Do I need to know how to code?
+
+It helps, but it isn’t required. You describe what you want in plain English and Claude Code writes and runs the scripts. Being able to read a CSV and check results matters more than writing code.
+
+### Is this better than tools like Clay?
+
+They solve the same problem differently. Clay gives you a ready-made interface and many built-in data sources. Claude Code is more flexible and works from plain instructions, but you set up the data connections yourself. Many teams use both.
+
+### How many companies can it process at once?
+
+It can work through hundreds of rows in one run, but quality checks matter more than speed. Work in batches, check samples from each batch, and keep the costs of any paid APIs in mind.

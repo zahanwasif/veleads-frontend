@@ -1,0 +1,156 @@
+export const meta = {
+  title: 'Why cold emails land in spam, and how to fix each problem',
+  summary:
+    'The ten deliverability problems we find most often when we audit a founder’s cold email setup, what causes each one, and the exact fix.',
+  description:
+    'Cold email deliverability for B2B founders. The 10 most common reasons emails land in spam, from SPF and DMARC to warm-up and bounce rates, and how to fix each one.',
+  topic: 'email-outbound',
+  author: 'abdullah-liaqat',
+  published: '2026-10-20',
+  readingMinutes: 9,
+}
+
+Most cold emails that land in spam fail before anyone reads a word. Inbox providers like Google and Microsoft decide where your email goes based on who is sending it, whether that sender can be verified, and how recipients have reacted to it before. Fix the setup and the sending habits, and good copy finally gets a chance.
+
+This playbook covers the ten problems we find most often when we audit a founder’s cold email setup, in the order we check them.
+
+## What decides whether a cold email lands in the inbox?
+
+Three things, roughly in this order of weight.
+
+1. **Reputation.** The history of your sending domain and mailboxes. New domains have none, and domains that have sent to bad lists have a poor one.
+2. **Authentication.** SPF, DKIM and DMARC records that prove you are allowed to send from your domain. Since February 2024, Google and Yahoo reject or filter mail that fails these checks far more aggressively.
+3. **Engagement.** Replies help. Bounces, spam complaints and deleted-without-opening hurt.
+
+Content matters too, but much less than most people think. A perfect email from a domain with no reputation and broken authentication still goes to spam.
+
+## Problem 1. You send cold email from your main domain
+
+If your main domain gets a poor reputation, everything sent from it suffers, including invoices, onboarding emails and replies to customers. That is too much to risk on outbound.
+
+**The fix.** Buy two or three secondary domains that look like yours, such as `getacme.com` or `tryacme.com`, registered in your company’s name. Point each one at your main website with a redirect, so a curious prospect who types it in lands on the right site. Send all cold email from these domains and keep your main domain for everything else.
+
+<Callout tone="warning" title="Don’t use lookalikes that feel deceptive">
+Pick variations a prospect would recognise as you. A domain that impersonates another company, or hides who you are, is both a legal risk and a fast way to get reported.
+</Callout>
+
+## Problem 2. SPF is missing, duplicated or over the lookup limit
+
+SPF is a DNS record that lists which servers may send email for your domain. Without it, inbox providers have no way to tell your email from a forgery.
+
+The common mistakes we find are
+
+- no SPF record at all on the sending domain
+- two separate SPF records, which makes both invalid
+- more than ten DNS lookups inside the record, usually from stacking `include` entries for every tool you have ever tried
+
+**The fix.** Keep exactly one SPF record per domain, and include only the services that actually send for it. For a domain that only sends through Google Workspace, it looks like this.
+
+```txt
+v=spf1 include:_spf.google.com ~all
+```
+
+## Problem 3. DKIM isn’t set up on your own domain
+
+DKIM adds a cryptographic signature to every email, so the receiver can confirm it really came from your domain and wasn’t changed on the way. Many sending tools sign with their own domain by default, which does nothing for your reputation.
+
+**The fix.** Turn on DKIM signing for each sending domain inside Google Workspace or Microsoft 365, publish the DNS record they give you, and use a 2048-bit key where it’s offered. Then send a test email to a Gmail address, open it, choose Show original, and check that DKIM says PASS with your domain.
+
+## Problem 4. There’s no DMARC record
+
+DMARC tells inbox providers what to do when SPF or DKIM fails, and it is now required for anyone sending in volume to Gmail and Yahoo. Without it, you look like the domains spammers set up and abandon.
+
+**The fix.** Start with a monitoring policy that reports problems without blocking anything.
+
+```txt
+v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com
+```
+
+Once the reports show your real mail passing for a couple of weeks, move to `p=quarantine`. Our live deliverability check below reads the DMARC record on your main domain and tells you which policy it uses.
+
+<OfferCta
+  offer="deliverability-check"
+  id="playbook-mid-form"
+  title="Free email infrastructure audit"
+  body="Enter your website. We check your mail servers, SPF and DMARC on the spot, then send a full audit with what to fix first."
+/>
+
+## Problem 5. New mailboxes start sending at full volume
+
+A brand new mailbox that suddenly sends a hundred emails a day looks exactly like a compromised account. Inbox providers throttle it, filter it or block it.
+
+**The fix.** Warm up every new mailbox for two to three weeks before it sends any cold email. Warm-up means a small, slowly growing number of real-looking conversations that get opened and replied to, which builds a sending history. Then ramp cold volume up gradually over the following weeks, not overnight.
+
+## Problem 6. Each mailbox sends too much
+
+Volume per mailbox is one of the clearest spam signals there is. Real people don’t send two hundred near-identical emails a day from one account.
+
+**The fix.** Spread volume across more mailboxes instead of pushing each one harder. Our standard setup is about three mailboxes per domain and about 30 cold emails per mailbox per day.
+
+| Daily cold emails | Mailboxes needed (about 30 each) | Domains needed (about 3 mailboxes each) |
+| --- | --- | --- |
+| 90 | 3 | 1 |
+| 270 | 9 | 3 |
+| 540 | 18 | 6 |
+
+## Problem 7. Your list bounces
+
+Every email sent to an address that doesn’t exist is a hard bounce, and inbox providers read a high bounce rate as proof you didn’t build your list carefully. Old exports, guessed addresses and scraped lists are the usual cause.
+
+**The fix.** Verify every address before it enters a campaign, remove anything that fails, and be careful with catch-all domains, which accept every address and hide bad ones. Aim to stay well under 2% bounces. For reference, the first two weeks of outreach for GRAIXL, an AI interview platform we work with, came in at a 0.3% bounce rate across 915 emails.
+
+## Problem 8. People mark you as spam
+
+A spam complaint is the strongest negative signal you can get. Google asks senders to keep their spam rate below 0.1% and never let it reach 0.3%.
+
+**The fix.** Most complaints come from sending to people who were never a fit. Tighten your targeting before you touch the copy, write to each person about something specific to them, and make it easy to say no. One plain line such as “Not relevant? Reply and I won’t follow up” gives people an alternative to the spam button.
+
+## Problem 9. Your email looks like a marketing blast
+
+Cold email should look like one person writing to another. Heavy HTML, images, several links, attachments and tracking pixels all push it towards the promotions tab or spam.
+
+**The fix.** Send plain text. Keep the first email to one link at most, or none, and no attachments. Turn off open tracking, which adds a hidden image and has become unreliable anyway. If you track link clicks, use a custom tracking domain instead of your tool’s shared one.
+
+## Problem 10. Nobody watches the numbers
+
+Deliverability drifts. A mailbox picks up a bad reputation, a record gets overwritten during a website change, or a list goes stale, and nobody notices until replies dry up.
+
+**The fix.** Check the same few numbers every week.
+
+- bounce rate and reply rate per mailbox, not just per campaign
+- spam rate and domain reputation in Google Postmaster Tools, once you send enough to Gmail for it to show data
+- your sending domains against the major blocklists, such as Spamhaus
+- inbox placement, by sending a test to a small set of seed inboxes
+
+When one mailbox slips, pause it and let it recover instead of pushing more volume through the others.
+
+## Cold email deliverability checklist
+
+- [ ] Cold email goes out from secondary domains, never the main domain
+- [ ] Each sending domain redirects to your main website
+- [ ] One SPF record per domain, under ten lookups
+- [ ] DKIM signing on your own domain, 2048-bit where possible
+- [ ] DMARC published, starting at p=none
+- [ ] Every new mailbox warmed up for two to three weeks
+- [ ] About 30 cold emails per mailbox per day, about three mailboxes per domain
+- [ ] Every address verified before sending, bounces well under 2%
+- [ ] Plain text, one link at most, no open tracking
+- [ ] Weekly checks on bounces, spam rate, blocklists and placement
+
+## Frequently asked questions
+
+### How long does it take to fix deliverability?
+
+DNS fixes such as SPF, DKIM and DMARC take effect within hours. Rebuilding a damaged sender reputation takes longer, usually several weeks of low, clean sending. For new domains, plan on two to three weeks of warm-up before cold email starts.
+
+### Can I just buy pre-warmed mailboxes?
+
+They save some time, but you don’t control how they were warmed or what they sent before. Mailboxes on domains registered in your own company’s name, warmed by you, are safer and stay yours.
+
+### Does email content really not matter?
+
+It matters, but it comes last. Content can move an email from primary to promotions, while authentication and reputation decide whether it reaches the inbox at all.
+
+### How many emails can I send per day without going to spam?
+
+There is no safe number for a whole domain, only for each mailbox. We keep cold email to about 30 per mailbox per day and add mailboxes and domains to grow volume.

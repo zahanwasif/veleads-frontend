@@ -1,3 +1,4 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -7,4 +8,13 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.100.130"],
 };
 
-export default nextConfig;
+// Playbooks are MDX files in content/playbooks. Plugins are named as strings so they work with Turbopack:
+// remark-gfm adds tables and checklists, rehype-slug gives every heading an id for linking.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ["remark-gfm"],
+    rehypePlugins: ["rehype-slug"],
+  },
+});
+
+export default withMDX(nextConfig);
