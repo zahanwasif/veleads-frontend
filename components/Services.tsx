@@ -5,9 +5,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Bot, PenLine, Search, Send, UserCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { MEETINGS_PER_CYCLE, OFFER_NAME, OFFER_PATH } from '@/lib/guarantee';
 import { services as serviceData } from '@/lib/services';
 import { PlanCta } from './PlanCta';
 import { ServiceVisual } from './ServiceVisual';
+import { Button } from './ui/Button';
 import { Eyebrow } from './ui/Eyebrow';
 import { useCardStack } from './ui/useCardStack';
 
@@ -38,10 +40,12 @@ const bandItems = [
   'Gold-tier ABM',
   'Reply handling',
   'Weekly reports',
-  'You own everything',
+  'Calls booked for you',
 ];
 
-export function Services() {
+// On the homepage this introduces what we do; on the offer page it shows what Guaranteed Meetings includes.
+export function Services({ variant = 'home' }: { variant?: 'home' | 'offer' }) {
+  const offer = variant === 'offer';
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
 
@@ -73,10 +77,10 @@ export function Services() {
 
   useCardStack(root, { media: '(max-width: 1023px)' });
 
-  // Links like #sprint-linkedin-outreach open that tab.
+  // Links like #service-linkedin-outreach open that tab.
   useEffect(() => {
     const openFromHash = () => {
-      const i = services.findIndex((sv) => `#sprint-${sv.slug}` === window.location.hash);
+      const i = services.findIndex((sv) => `#service-${sv.slug}` === window.location.hash);
       if (i >= 0) setActive(i);
     };
     openFromHash();
@@ -112,7 +116,7 @@ export function Services() {
     ));
 
   return (
-    <section ref={root} id="services">
+    <section ref={root} id="services" className="pb-16 md:pb-28">
       <div className="panel relative z-10 overflow-clip bg-inverse-bg text-inverse-text">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden justify-between px-[7%] md:flex">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -154,17 +158,18 @@ export function Services() {
             className="relative grid gap-10 lg:grid-cols-2 lg:gap-16"
           >
             {services.map((sv) => (
-              <span key={sv.slug} id={`sprint-${sv.slug}`} aria-hidden="true" className="absolute -top-28" />
+              <span key={sv.slug} id={`service-${sv.slug}`} aria-hidden="true" className="absolute -top-28" />
             ))}
             <div className="flex min-w-0 flex-col gap-8 lg:gap-10">
               <div className="flex flex-col gap-5">
-                <Eyebrow tone="dark" className="self-start">Inside the sprint</Eyebrow>
+                <Eyebrow tone="dark" className="self-start">{offer ? 'What’s included' : 'What we do'}</Eyebrow>
                 <h2 className="heading-1 max-w-[30rem]">
                   They see your posts. <span className="text-accent">Then they get your message.</span>
                 </h2>
                 <p className="max-w-[30rem] text-inverse-text-muted">
-                  We research ~3,300 best-fit buyers, write to each one personally, and book the calls on your calendar.
-                  You keep everything we build.
+                  {offer
+                    ? 'All three services run as one system. We find your best-fit buyers, write to each one personally, handle the replies and book the calls on your calendar.'
+                    : 'We find your best-fit buyers, write to each one personally, and book the calls on your calendar. Start with one service, or run all three together.'}
                 </p>
               </div>
 
@@ -231,10 +236,21 @@ export function Services() {
               </ul>
 
               <div className="flex flex-col items-start gap-3">
-                <PlanCta variant="light" />
-                <span className="text-sm text-inverse-text-muted">
-                  Enter your website and see how your sprint would run.
-                </span>
+                {offer ? (
+                  <>
+                    <PlanCta variant="light" />
+                    <span className="text-sm text-inverse-text-muted">
+                      Enter your website and see how we&rsquo;d book your first meetings.
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Button href={OFFER_PATH} variant="light" label={`See ${OFFER_NAME}`} />
+                    <span className="text-sm text-inverse-text-muted">
+                      All three services, with {MEETINGS_PER_CYCLE} meetings a month guaranteed.
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 

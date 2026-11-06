@@ -12,7 +12,7 @@ export const authors = {
   'abdullah-liaqat': {
     name: 'Abdullah Liaqat',
     role: 'Founder, Veleads',
-    bio: 'Abdullah runs the 90-Day Pipeline Sprint, helping seed and Series A founders book more sales calls through LinkedIn and cold email.',
+    bio: 'Abdullah runs Veleads, helping B2B founders book more sales calls through LinkedIn and cold email.',
     image: '/authors/abdullah-liaqat.jpg',
     linkedin: 'https://www.linkedin.com/in/abdullah-liaqat-3623701a1',
   },

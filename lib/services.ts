@@ -1,7 +1,7 @@
 import { Mail, PenLine, Radar, type LucideIcon } from 'lucide-react';
 import type { OfferId } from './offers';
 
-// Content for the three services. Each one runs inside the 90-Day Pipeline Sprint and is also sold on its own.
+// Content for the three services. Each one runs inside Guaranteed Meetings and is also sold on its own.
 // Claims rule: only real numbers, clearly labelled. No meeting guarantees.
 
 export type ServiceSlug = 'linkedin-content' | 'linkedin-outreach' | 'email-outbound';
@@ -14,7 +14,7 @@ export type Service = {
   offer: OfferId;
   /** One line for menus and footer cards. */
   short: string;
-  /** Paragraph used on the homepage sprint tabs. */
+  /** Paragraph used on the service tabs (homepage and offer page). */
   summary: string;
   metaDescription: string;
   eyebrow: string;
@@ -78,7 +78,7 @@ export const services: Service[] = [
     summary:
       'Outreach from your own LinkedIn profile to accounts showing buying signals. We start the conversation and book the call. You just show up.',
     metaDescription:
-      'Signal-based LinkedIn outreach for B2B AI & SaaS founders. We message accounts showing buying signals from your profile and book calls on your calendar.',
+      'Signal-based LinkedIn outreach for B2B founders. We message accounts showing buying signals from your profile and book calls on your calendar.',
     eyebrow: 'LinkedIn Outreach',
     headline: 'Reach buyers when they’re ready.',
     headlineAccent: 'Then we book the call.',
@@ -121,7 +121,7 @@ export const services: Service[] = [
     offer: 'deliverability-check',
     short: 'Cold email infrastructure in your name.',
     summary:
-      'Cold email infrastructure in your name, with secondary domains, warmed mailboxes and monitored deliverability. Inside the sprint, we write and run the campaigns on it too.',
+      'Cold email infrastructure in your name, with secondary domains, warmed mailboxes and monitored deliverability. Inside Guaranteed Meetings, we write and run the campaigns on it too.',
     metaDescription:
       'Cold email infrastructure for B2B founders. Secondary domains in your name, warmed mailboxes, SPF, DKIM and DMARC, and ongoing deliverability monitoring.',
     eyebrow: 'Email Outbound',
@@ -145,7 +145,7 @@ export const services: Service[] = [
     ],
     promise: {
       title: 'Infrastructure you own, kept healthy.',
-      body: 'One setup fee, then a monthly management fee. Lists and campaigns are part of the 90-Day Pipeline Sprint, where we write and run them on this setup.',
+      body: 'One setup fee, then a monthly management fee. Lists and campaigns are part of Guaranteed Meetings, where we write and run them on this setup.',
     },
     proof: {
       value: '0.3%',
@@ -155,7 +155,7 @@ export const services: Service[] = [
     faqs: [
       { q: 'Why not send from my main domain?', a: 'Cold email carries risk. If a secondary domain gets flagged, your main domain, and the emails your customers rely on, stay untouched.' },
       { q: 'Who owns the domains and mailboxes?', a: 'You do. Everything is registered in your name and stays with you if we stop working together.' },
-      { q: 'Do you write and send the campaigns?', a: 'Inside the 90-Day Pipeline Sprint, yes. We build the lists, write the emails and run the campaigns. On its own, this service covers the infrastructure.' },
+      { q: 'Do you write and send the campaigns?', a: 'Inside Guaranteed Meetings, yes. We build the lists, write the emails and run the campaigns. On its own, this service covers the infrastructure.' },
       { q: 'How long until I can send?', a: 'Warm-up takes two to three weeks. Cold email starts once the mailboxes are ready.' },
     ],
   },

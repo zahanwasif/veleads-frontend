@@ -191,13 +191,13 @@ export default async function PlaybookPage({ params }: PageProps<'/playbooks/[sl
             }
           />
           <Link
-            href={service ? `/services/${service.slug}` : '/#services'}
+            href={service ? `/services/${service.slug}` : '/guaranteed-meetings'}
             className="group flex items-center justify-between gap-4 rounded-xl border border-border p-5 transition-colors hover:bg-bg"
           >
             <span className="flex flex-col gap-1">
               <span className="text-sm text-text-muted">Rather have it done for you?</span>
               <span className="font-semibold text-text">
-                {service ? `See our ${service.title} service` : 'See the 90-Day Pipeline Sprint'}
+                {service ? `See our ${service.title} service` : 'See Guaranteed Meetings'}
               </span>
             </span>
             <ArrowUpRight

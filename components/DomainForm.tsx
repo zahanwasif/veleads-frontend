@@ -12,7 +12,16 @@ import { ReportDialog, type Subject } from './ReportDialog';
  * The pill form that starts every free offer: a website (homepage, Email Outbound)
  * or a LinkedIn profile URL (the LinkedIn services). It validates, then opens the popup.
  */
-export function DomainForm({ offerId = 'sprint-plan', inputId = 'hero-domain' }: { offerId?: OfferId; inputId?: string }) {
+export function DomainForm({
+  offerId = 'sprint-plan',
+  inputId = 'hero-domain',
+  buttonLabel,
+}: {
+  offerId?: OfferId;
+  inputId?: string;
+  /** Overrides the offer's button text, e.g. a more general label on the homepage. */
+  buttonLabel?: string;
+}) {
   const offer = offers[offerId];
   const id = useId();
   const [value, setValue] = useState('');
@@ -121,7 +130,7 @@ export function DomainForm({ offerId = 'sprint-plan', inputId = 'hero-domain' }:
             </>
           ) : (
             <>
-              <span className="flex-1 text-center">{offer.button}</span>
+              <span className="flex-1 text-center">{buttonLabel ?? offer.button}</span>
               <span
                 aria-hidden="true"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-on-brand text-brand transition-transform duration-500 ease-out-soft group-hover:rotate-45"

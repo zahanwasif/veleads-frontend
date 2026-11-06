@@ -2,6 +2,7 @@
 
 import { Check, X } from 'lucide-react';
 import { useRef } from 'react';
+import { EMAIL_LIVE_DAY, LINKEDIN_LIVE_DAY, MEETINGS_PER_CYCLE, MIN_MONTHS } from '@/lib/guarantee';
 import { LogoMark } from './Logo';
 import { BookDemoButton } from './BookDemoButton';
 import { PlanCta } from './PlanCta';
@@ -12,10 +13,22 @@ const options = ['Hiring an SDR', 'Typical agency'] as const;
 
 const rows: { label: string; sdr: string; agency: string; us: string }[] = [
   {
+    label: 'Guarantee',
+    sdr: 'None. You pay the salary either way',
+    agency: 'Rarely. The retainer is due either way',
+    us: `${MEETINGS_PER_CYCLE} qualified meetings a month, or cash back`,
+  },
+  {
     label: 'Getting started',
     sdr: 'Months to hire and ramp',
     agency: 'Fast, on their templates',
-    us: 'Outreach live by day 31',
+    us: `LinkedIn live in ${LINKEDIN_LIVE_DAY} days, email in ${EMAIL_LIVE_DAY}`,
+  },
+  {
+    label: 'Your time',
+    sdr: 'Hiring, training and managing',
+    agency: 'Briefs, calls and chasing',
+    us: 'About 1 hour a week, plus the sales calls',
   },
   {
     label: 'Inbound',
@@ -30,22 +43,10 @@ const rows: { label: string; sdr: string; agency: string; us: string }[] = [
     us: 'A researched first line per prospect, checked by a person',
   },
   {
-    label: 'Reporting',
-    sdr: 'Whatever they track',
-    agency: 'Monthly PDFs of sends and opens',
-    us: 'Weekly, tied to replies and meetings',
-  },
-  {
-    label: 'Ownership',
-    sdr: 'Leaves when they leave',
-    agency: 'The agency keeps domains and lists',
-    us: 'You own every account, list and automation',
-  },
-  {
     label: 'Commitment',
     sdr: 'Salary, benefits, management',
     agency: 'Long retainers',
-    us: '90 days, then month to month or take the keys',
+    us: `${MIN_MONTHS} months, then month to month`,
   },
 ];
 
@@ -68,7 +69,7 @@ function Us({ text }: { text: string }) {
         <Check className="h-3 w-3" strokeWidth={3} aria-hidden="true" />
       </span>
       <span>
-        <span className="sr-only">Veleads sprint. </span>
+        <span className="sr-only">Veleads. </span>
         {text}
       </span>
     </span>
@@ -84,9 +85,9 @@ export function Comparison() {
       <div className="panel bg-bg">
         <div className="container-page flex flex-col items-center gap-10 py-16 md:gap-14 md:py-32">
           <div data-reveal className="flex flex-col items-center gap-6 text-center">
-            <Eyebrow>Why founders choose a sprint</Eyebrow>
+            <Eyebrow>Why founders choose us</Eyebrow>
             <h2 id="comparison-title" className="display-l max-w-[52rem] max-md:text-[2.25rem]">
-              Hire an SDR. Hire an agency. <span className="text-brand-text">Or own the engine.</span>
+              Hire an SDR. Hire an agency. <span className="text-brand-text">Or pay for meetings.</span>
             </h2>
           </div>
 
@@ -104,7 +105,7 @@ export function Comparison() {
               ))}
               <span className="flex h-14 items-center justify-center gap-2 rounded-lg bg-brand text-on-brand">
                 <LogoMark size={24} />
-                <span className="font-display text-lg font-bold tracking-[-0.5px]">veleads sprint</span>
+                <span className="font-display text-lg font-bold tracking-[-0.5px]">veleads</span>
               </span>
             </div>
 
@@ -151,7 +152,7 @@ export function Comparison() {
           </div>
 
           <div data-reveal className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <BookDemoButton variant="primary" label="Check if we’re a fit" className="w-full sm:w-auto" />
+            <BookDemoButton variant="primary" label="See if you qualify" className="w-full sm:w-auto" />
             <PlanCta className="w-full sm:w-auto" />
           </div>
         </div>

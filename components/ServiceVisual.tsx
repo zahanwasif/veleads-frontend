@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 import type { ServiceSlug } from '@/lib/services';
 
-// Product mockups for each service, shared by the homepage sprint tabs and the service pages.
+// Product mockups for each service, shared by the service tabs and the service pages.
 
 function Row({ label, value, tone = 'muted' }: { label: string; value: string; tone?: 'muted' | 'mint' }) {
   return (

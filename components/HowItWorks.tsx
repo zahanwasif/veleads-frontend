@@ -3,7 +3,16 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Check } from 'lucide-react';
 import { useRef, type ReactNode } from 'react';
+import {
+  CYCLE_DAYS,
+  EMAIL_LIVE_DAY,
+  LINKEDIN_LIVE_DAY,
+  MEETINGS_PER_CYCLE,
+  REFUND_PER_MEETING,
+  usd,
+} from '@/lib/guarantee';
 import { BookDemoButton } from './BookDemoButton';
 import { useCardStack } from './ui/useCardStack';
 
@@ -42,37 +51,39 @@ function Checklist({ items }: { items: [string, boolean][] }) {
   );
 }
 
+const meetingsThisCycle = ['VP Sales', 'Founder', 'Head of Growth', 'CTO', 'Head of RevOps', 'COO', 'Head of Sales', 'CEO'];
+
 const steps: Step[] = [
   {
-    tags: ['Days 1\u201330', 'Foundation'],
-    title: 'Find your buyers. Build the engine.',
-    desc: 'We research 3\u20134 ICPs and map your market, set up sending domains and mailboxes in your name, optimise your LinkedIn profile and start posting.',
-    outcome: '3\u20134 ICPs',
-    outcomeLabel: 'Researched and signed off with you',
+    tags: [`Days 0\u2013${LINKEDIN_LIVE_DAY}`, 'Onboarding'],
+    title: 'We set everything up. You approve the plan.',
+    desc: 'One kickoff call. We agree your ideal customer with you, set up sending domains and mailboxes in your name, optimise your LinkedIn profile and build your first target list. You never touch a tool.',
+    outcome: `Day ${LINKEDIN_LIVE_DAY}`,
+    outcomeLabel: 'LinkedIn outreach live',
     visual: (
       <div className="flex w-full flex-col items-center gap-5">
         <div className="flex max-w-[420px] flex-wrap justify-center gap-2">
-          <Chip>B2B SaaS, 50 to 500 staff</Chip>
+          <Chip>B2B, 50 to 500 staff</Chip>
           <Chip>Hiring SDRs</Chip>
           <Chip>Recently funded</Chip>
         </div>
         <Checklist
           items={[
+            ['Ideal customer signed off', true],
             ['Domains bought', true],
-            ['Mailboxes warming', false],
             ['Profile optimised', true],
-            ['First posts live', true],
+            ['Mailboxes warming', false],
           ]}
         />
       </div>
     ),
   },
   {
-    tags: ['Days 31\u201360', 'Launch'],
-    title: 'Go live on LinkedIn and email.',
-    desc: 'Signal-based outreach goes live on both channels, your posts run three times a week, and we work ABM plays on your gold-tier accounts, typically around 200. Replies come to us; meetings land on your calendar.',
-    outcome: 'Top accounts',
-    outcomeLabel: 'Worked across LinkedIn and email',
+    tags: [`Days ${LINKEDIN_LIVE_DAY}\u2013${EMAIL_LIVE_DAY}`, 'LinkedIn first'],
+    title: 'LinkedIn goes live while email warms up.',
+    desc: 'Signal-based outreach starts from your profile and your posts go out three times a week. Replies come to us and calls land on your calendar, while your mailboxes warm up for email.',
+    outcome: `Day ${EMAIL_LIVE_DAY}`,
+    outcomeLabel: 'Email live, guarantee starts',
     visual: (
       <ol className="flex w-full max-w-[360px] flex-col gap-3">
         {['LinkedIn connection', 'Email, day 3', 'LinkedIn message, day 6', 'Email follow-up, day 10'].map((touch, i) => (
@@ -87,33 +98,24 @@ const steps: Step[] = [
     ),
   },
   {
-    tags: ['Days 61\u201390', 'Focus'],
-    title: 'Double down on what books meetings.',
-    desc: 'We compare every ICP across both channels, pick the winner, and tune copy and content to it. On day 90 you get a review and a plan, then you decide whether to keep us on or take the keys.',
-    outcome: '1 ICP',
-    outcomeLabel: 'Proven by real replies',
+    tags: [`Every ${CYCLE_DAYS} days`, 'Guaranteed'],
+    title: `${MEETINGS_PER_CYCLE} qualified meetings, or cash back.`,
+    desc: `Both channels work the accounts showing buying signals. A report every week, a call every two weeks. If a cycle ends short of ${MEETINGS_PER_CYCLE} qualified meetings, we refund ${usd(REFUND_PER_MEETING)} for each one missing.`,
+    outcome: `${MEETINGS_PER_CYCLE}+`,
+    outcomeLabel: 'Qualified meetings every cycle',
     visual: (
       <div className="flex w-full max-w-[380px] flex-col gap-4 rounded-lg bg-surface p-5 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-text-muted">Replies by ICP</span>
-          <span className="text-xs text-text-muted">Day 75</span>
+          <span className="text-sm font-medium text-text-muted">Meetings this cycle</span>
+          <span className="text-xs font-semibold text-accent-text">
+            {meetingsThisCycle.length} of {MEETINGS_PER_CYCLE}
+          </span>
         </div>
-        <ul className="flex flex-col gap-3">
-          {[
-            ['ICP A', 38, false],
-            ['ICP B', 86, true],
-            ['ICP C', 52, false],
-            ['ICP D', 24, false],
-          ].map(([name, w, win]) => (
-            <li key={name as string} className="flex items-center gap-3 text-sm">
-              <span className="w-12 shrink-0 font-medium">{name}</span>
-              <span className="h-3 flex-1 overflow-hidden rounded-full bg-surface-sunken" aria-hidden="true">
-                <span
-                  style={{ width: `${w}%` }}
-                  className={`block h-full rounded-full ${win ? 'bg-accent' : 'bg-brand-subtle'}`}
-                />
-              </span>
-              {win && <span className="text-xs font-semibold text-accent-text">Winner</span>}
+        <ul className="grid grid-cols-2 gap-2">
+          {meetingsThisCycle.map((who, i) => (
+            <li key={`${who}-${i}`} className="flex items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-on-accent">
+              <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={3} aria-hidden="true" />
+              <span className="truncate">{who}</span>
             </li>
           ))}
         </ul>
@@ -152,14 +154,14 @@ export function HowItWorks() {
         <div data-reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex max-w-[40rem] flex-col gap-5">
             <h2 className="heading-1">
-              What happens in <span className="text-brand-text">your 90 days.</span>
+              From kickoff to booked calls <span className="text-brand-text">in {EMAIL_LIVE_DAY} days.</span>
             </h2>
             <p className="text-text-secondary">
-              A report every week, a call every two weeks. Days 1&ndash;30 produce few meetings by design, because
-              that&rsquo;s when your profile, mailboxes and lists warm up.
+              A report every week, a call every two weeks. You don&rsquo;t pay a monthly fee until both channels are
+              live.
             </p>
           </div>
-          <BookDemoButton variant="dark" className="shrink-0 self-start sm:self-auto" />
+          <BookDemoButton variant="dark" label="See if you qualify" className="shrink-0 self-start sm:self-auto" />
         </div>
 
         <div className="flex flex-col gap-6">

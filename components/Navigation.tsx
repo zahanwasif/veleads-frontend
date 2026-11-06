@@ -4,14 +4,15 @@ import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { MEETINGS_PER_CYCLE } from '@/lib/guarantee';
 import { services } from '@/lib/services';
 import { BookDemoButton } from './BookDemoButton';
 import { Logo } from './Logo';
 
-// Links that point at homepage sections use "/#id" so they work from every page.
+// Links that point at page sections use "/page#id" so they work from every page.
 const links = [
-  { label: 'How it works', href: '/#how-it-works' },
-  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Guaranteed Meetings', href: '/guaranteed-meetings' },
+  { label: 'Pricing', href: '/guaranteed-meetings#pricing' },
   { label: 'Playbooks', href: '/playbooks' },
 ];
 
@@ -118,13 +119,13 @@ function ServicesMenu({ pathname }: { pathname: string }) {
             })}
           </ul>
           <Link
-            href="/#services"
+            href="/guaranteed-meetings"
             onClick={() => setOpen(false)}
             className="mt-1 flex items-center justify-between rounded-lg bg-inverse-bg px-4 py-3 text-sm text-inverse-text transition-colors hover:bg-inverse-surface"
           >
             <span>
-              <span className="font-semibold">All three together.</span>{' '}
-              <span className="text-inverse-text-muted">The 90-Day Pipeline Sprint</span>
+              <span className="font-semibold">All three, guaranteed.</span>{' '}
+              <span className="text-inverse-text-muted">{MEETINGS_PER_CYCLE} meetings a month, or cash back</span>
             </span>
             <ArrowRight className="h-4 w-4 text-accent" aria-hidden="true" />
           </Link>

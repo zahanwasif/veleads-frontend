@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { MEETINGS_PER_CYCLE } from '@/lib/guarantee';
 import { services } from '@/lib/services';
 import { BookDemoButton } from './BookDemoButton';
 import { CookieSettingsButton } from './CookieSettingsButton';
@@ -9,10 +10,10 @@ const pieces = services.map((s) => ({ title: s.title, desc: s.short, href: `/ser
 
 const pages = [
   { label: 'Home', href: '/' },
-  { label: 'Inside the sprint', href: '/#services' },
-  { label: 'How it works', href: '/#how-it-works' },
+  { label: 'Guaranteed Meetings', href: '/guaranteed-meetings' },
+  { label: 'How it works', href: '/guaranteed-meetings#how-it-works' },
   { label: 'Results', href: '/#results' },
-  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Pricing', href: '/guaranteed-meetings#pricing' },
   { label: 'Playbooks', href: '/playbooks' },
   { label: 'FAQ', href: '/#faq' },
 ];
@@ -28,13 +29,14 @@ export function Footer() {
 
         <div className="container-page relative flex flex-col items-center gap-6 pt-24 pb-12 text-center md:gap-8 md:pt-36 md:pb-16">
           <h2 data-reveal className="display-xl max-w-[56rem]">
-            Start your 90 days.
+            Let&rsquo;s fill your calendar.
           </h2>
           <p data-reveal className="lead max-w-[34rem] max-md:text-[1.0625rem]">
-            Book a 30-minute strategy call. We research 3 of your target accounts live.
+            {MEETINGS_PER_CYCLE} qualified sales calls a month, or cash back. Book a 30-minute call to see if you qualify. We research
+            3 of your target accounts live.
           </p>
           <div data-reveal className="mt-2 -rotate-[4deg] transition-transform duration-500 ease-out-soft hover:rotate-0">
-            <BookDemoButton variant="dark" label="Claim a founding spot" />
+            <BookDemoButton variant="dark" label="See if you qualify" />
           </div>
         </div>
 
@@ -65,8 +67,8 @@ export function Footer() {
           <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
             <span className="heading-4">Inbound and outbound, engineered like software.</span>
             <p className="max-w-[24rem] text-sm">
-              Veleads runs the 90-Day Pipeline Sprint for B2B founders, with LinkedIn content, signal-based outreach
-              and email built as one system you own.
+              Veleads runs LinkedIn content, signal-based outreach and cold email for B2B founders, built as one
+              system you own.
             </p>
           </div>
           <nav aria-label="Footer pages" className="flex flex-col gap-3">
@@ -102,7 +104,7 @@ export function Footer() {
 
         <div className="container-page relative flex flex-col gap-2 border-t border-white/15 py-6 text-[13px] text-on-brand sm:flex-row sm:justify-between">
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span>© 2026 Veleads · The 90-Day Pipeline Sprint</span>
+            <span>© 2026 Veleads</span>
             <CookieSettingsButton />
           </span>
           <span>Agents do the heavy lifting. People make it good.</span>
