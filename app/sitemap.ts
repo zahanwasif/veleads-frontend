@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
+    { url: `${SITE_URL}/privacy`, lastModified: buildTime, changeFrequency: 'yearly', priority: 0.2 },
     {
       url: `${SITE_URL}/playbooks`,
       lastModified: latestPlaybook ? new Date(latestPlaybook) : buildTime,

@@ -105,6 +105,9 @@ export function Footer() {
         <div className="container-page relative flex flex-col gap-2 border-t border-white/15 py-6 text-[13px] text-on-brand sm:flex-row sm:justify-between">
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>© 2026 Veleads</span>
+            <Link href="/privacy" className="underline-offset-4 hover:underline">
+              Privacy
+            </Link>
             <CookieSettingsButton />
           </span>
           <span>Agents do the heavy lifting. People make it good.</span>

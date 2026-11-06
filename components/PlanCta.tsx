@@ -2,8 +2,8 @@
 
 import { Button, type ButtonVariant } from './ui/Button';
 
-// Secondary conversion: takes visitors back to the hero form and focuses it.
-// Pages without a hero form send visitors to the offer page's form instead.
+// Secondary conversion: takes visitors back to this page's form and focuses it.
+// Only use it on a page that has the form; the plain #link is the no-JavaScript fallback.
 export function PlanCta({
   variant = 'light',
   className = '',
@@ -17,13 +17,12 @@ export function PlanCta({
 }) {
   return (
     <Button
-      href="/guaranteed-meetings#top"
+      href={`#${targetId}`}
       variant={variant}
       label={label}
       className={className}
       onClick={(e) => {
         const input = document.getElementById(targetId) as HTMLInputElement | null;
-        // No domain field on this page, so let the link take them to the offer page.
         if (!input) return;
         e.preventDefault();
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
