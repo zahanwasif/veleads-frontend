@@ -1,4 +1,4 @@
-// Free lead magnets behind each "enter your X" form. The homepage offers the 90-day plan;
+// Free lead magnets behind each "enter your X" form. The homepage and offer page offer a pipeline plan;
 // each service page offers something specific to that service.
 
 export const OFFER_IDS = ['sprint-plan', 'profile-review', 'outreach-list', 'deliverability-check'] as const;
@@ -26,12 +26,12 @@ export const offers: Record<OfferId, Offer> = {
     input: 'domain',
     inputLabel: 'Your company website',
     placeholder: 'yourcompany.com',
-    button: 'See your 90 days',
+    button: 'See your plan',
     note: 'Free, takes about 20 seconds.',
-    dialogEyebrow: 'Your 90-day plan',
+    dialogEyebrow: 'Your pipeline plan',
     steps: (s) => [`Reading ${s}`, 'Mapping your ICP', 'Finding buyers showing signals', 'Curating your target list'],
     formTitle: 'Where should we send your report?',
-    formBody: (s) => `Your ICP, a starter list of target accounts and a 90-day plan for ${s}.`,
+    formBody: (s) => `Your ideal customer, a starter list of target accounts and a plan to book your first meetings for ${s}.`,
     submit: 'Send my report',
     doneTitle: 'Your report is on its way.',
   },

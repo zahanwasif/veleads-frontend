@@ -2,8 +2,15 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { CalendarDays, Check, ChevronsRight, Clock3 } from 'lucide-react';
+import { CalendarDays, Check, ChevronsRight, ShieldCheck } from 'lucide-react';
 import { Fragment, useRef } from 'react';
+import {
+  EMAIL_LIVE_DAY,
+  LINKEDIN_LIVE_DAY,
+  MEETINGS_PER_CYCLE,
+  REFUND_PER_MEETING,
+  usd,
+} from '@/lib/guarantee';
 import { BookCallLink } from './BookCallLink';
 import { DomainForm } from './DomainForm';
 import { LogoMark } from './Logo';
@@ -12,32 +19,30 @@ import { Eyebrow } from './ui/Eyebrow';
 
 gsap.registerPlugin(useGSAP);
 
-const phases = [
-  { name: 'Foundation', days: 'Days 1–30', state: 'done' },
-  { name: 'Launch', days: 'Days 31–60', state: 'active' },
-  { name: 'Focus', days: 'Days 61–90', state: 'next' },
-] as const;
+// Hero visual: one 30-day guarantee cycle, illustrative. Left card tracks the guarantee
+// (speed and risk), right card shows the outcome: the meetings on the founder's calendar.
+const CYCLE_DAY = 24;
 
-const thisWeek = [
-  { label: 'ICP shortlist approved', done: true },
-  { label: 'Mailboxes warmed up', done: true },
-  { label: 'Signal list refreshed', done: true },
-  { label: 'Founder post scheduled', done: false },
+const milestones = [
+  { label: 'LinkedIn outreach live', day: `Day ${LINKEDIN_LIVE_DAY}` },
+  { label: 'Email live, guarantee started', day: `Day ${EMAIL_LIVE_DAY}` },
 ];
 
-// Illustrative week for the hero calendar.
+// Four weeks of the cycle, Monday to Friday. Shows up to MEETINGS_PER_CYCLE of these meetings; add more if it rises.
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-const slots = ['09:00', '11:00', '14:00', '16:00'];
-const TODAY = 2; // Wednesday is highlighted
-const meetings: { day: number; slot: number; who: string }[] = [
-  { day: 0, slot: 1, who: 'VP Sales' },
-  { day: 1, slot: 0, who: 'Founder' },
-  { day: 1, slot: 3, who: 'Head of RevOps' },
-  { day: 2, slot: 2, who: 'CTO' },
-  { day: 3, slot: 1, who: 'Head of Growth' },
-  { day: 4, slot: 0, who: 'COO' },
-  { day: 4, slot: 2, who: 'VP Sales' },
+const weeks = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4'];
+const CURRENT_WEEK = 3;
+const meetingPlan: { week: number; day: number; who: string }[] = [
+  { week: 0, day: 1, who: 'Founder' },
+  { week: 0, day: 3, who: 'VP Sales' },
+  { week: 1, day: 0, who: 'Head of Growth' },
+  { week: 1, day: 2, who: 'CTO' },
+  { week: 2, day: 1, who: 'Head of RevOps' },
+  { week: 2, day: 4, who: 'COO' },
+  { week: 3, day: 0, who: 'VP Sales' },
+  { week: 3, day: 2, who: 'CEO' },
 ];
+const meetings = meetingPlan.slice(0, MEETINGS_PER_CYCLE);
 
 function Words({ text, className = '' }: { text: string; className?: string }) {
   return (
@@ -51,7 +56,9 @@ function Words({ text, className = '' }: { text: string; className?: string }) {
   );
 }
 
-export function Hero() {
+// The homepage introduces Veleads; the offer page sells Guaranteed Meetings.
+export function Hero({ variant = 'home' }: { variant?: 'home' | 'offer' }) {
+  const offer = variant === 'offer';
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -91,14 +98,12 @@ export function Hero() {
         <div className="container-page flex flex-col items-center text-center">
           <span data-hero-eyebrow>
             <Eyebrow>
-              <span>
-                For B2B AI &amp; SaaS founders<span className="max-[380px]:hidden">, seed to Series A</span>
-              </span>
+              <span>For B2B founders with $10k+ deals</span>
             </Eyebrow>
           </span>
 
           <h1 className="display-xl mt-6 max-w-5xl text-text md:mt-7">
-            <Words text="Stop prospecting." />
+            <Words text={offer ? `${MEETINGS_PER_CYCLE} sales calls a month.` : 'You close the deals.'} />
             <span
               data-hero-word
               aria-hidden="true"
@@ -109,21 +114,39 @@ export function Hero() {
               <ChevronsRight className="h-[0.5em] w-[0.5em] text-accent" strokeWidth={2.5} />
             </span>{' '}
             <br className="hidden md:block" />
-            <Words text="Start taking" />
-            <Words text="sales calls." className="text-brand-text" />
+            <Words text={offer ? 'Or your' : 'We fill'} />
+            <Words text={offer ? 'money back.' : 'your calendar.'} className="text-brand-text" />
           </h1>
 
           <p data-hero-sub className="lead mt-6 max-w-[42rem] text-text-secondary max-md:text-[1.0625rem] max-md:leading-relaxed md:mt-7">
-            <span className="font-semibold text-text">The 90-day, done-for-you sprint on LinkedIn and email.</span>{' '}
-            Outreach live by day 31, or your next month is free.
+            {offer ? (
+              <>
+                LinkedIn outreach live in 3 days, email in 21. Then{' '}
+                <span className="font-semibold text-text">{MEETINGS_PER_CYCLE} qualified sales calls every 30 days</span>, or cash back for
+                each one we miss.
+              </>
+            ) : (
+              <>
+                We book qualified sales calls with your buyers through LinkedIn and email.{' '}
+                <span className="font-semibold text-text">{MEETINGS_PER_CYCLE} a month, guaranteed, or cash back.</span>
+              </>
+            )}
           </p>
 
           <div data-hero-cta className="mt-8 flex w-full flex-col items-center gap-4">
-            <DomainForm />
-            <p className="text-sm text-text-muted">
-              Free, takes about 20 seconds. Prefer to talk?{' '}
-              <BookCallLink />
-            </p>
+            {offer ? (
+              <>
+                <DomainForm />
+                <p className="text-sm text-text-muted">
+                  Free, takes about 20 seconds. Ready to talk? <BookCallLink label="See if you qualify" />
+                </p>
+              </>
+            ) : (
+              <>
+                <DomainForm buttonLabel="Get my free plan" />
+                <p className="text-sm text-text-muted">Free, takes about 20 seconds.</p>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -135,61 +158,60 @@ export function Hero() {
         >
           <div aria-hidden="true" className="absolute -left-20 -bottom-24 h-72 w-72 rounded-full bg-brand/10" />
           <div className="relative w-full max-w-[540px]">
-            <div className="rounded-xl border border-border bg-surface p-5 shadow-lg sm:p-6">
-              <div className="mb-5 flex items-center justify-between">
-                <span className="eyebrow text-text-muted">Sprint progress</span>
+            <div className="rounded-xl border border-border bg-surface p-5 text-left shadow-lg sm:p-6">
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <span className="eyebrow text-text-muted">Your guarantee</span>
                 <span className="rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-medium text-text-muted">
-                  Day 38 of 90
+                  Cycle 2 · day {CYCLE_DAY} of 30
                 </span>
               </div>
 
-              <ol className="grid grid-cols-3 gap-2">
-                {phases.map((phase) => (
-                  <li key={phase.name} className="flex flex-col gap-2 text-left">
-                    <span
-                      aria-hidden="true"
-                      className={`h-1.5 rounded-full ${
-                        phase.state === 'done' ? 'bg-mint-500' : phase.state === 'active' ? 'bg-brand' : 'bg-border'
-                      }`}
-                    />
-                    <span className="text-sm font-semibold">{phase.name}</span>
-                    <span className="flex flex-col text-xs text-text-muted sm:flex-row sm:gap-1">
-                      <span>{phase.state === 'done' ? 'Done' : phase.state === 'active' ? 'In progress' : 'Up next'}</span>
-                      <span className="hidden sm:inline" aria-hidden="true">·</span>
-                      <span className="whitespace-nowrap">{phase.days}</span>
+              <ul className="flex flex-col gap-2">
+                {milestones.map((m) => (
+                  <li
+                    key={m.label}
+                    data-hero-row
+                    className="flex items-center gap-3 rounded-md bg-surface-sunken px-3.5 py-3 text-sm"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden="true" />
                     </span>
+                    <span className="flex-1 font-medium">{m.label}</span>
+                    <span className="text-xs font-medium text-text-muted">{m.day}</span>
                   </li>
                 ))}
-              </ol>
+              </ul>
 
-              <div className="mt-6 flex flex-col gap-2">
-                <span className="text-left text-xs font-medium text-text-muted">This week</span>
-                <ul className="flex flex-col gap-2">
-                  {thisWeek.map((item) => (
-                    <li
-                      key={item.label}
-                      data-hero-row
-                      className={`group flex items-center gap-3 rounded-md px-3.5 py-3 text-left text-sm transition-[translate,box-shadow,background-color] duration-300 ease-out-soft hover:shadow-[0_12px_28px_rgba(16,18,51,0.12)] motion-safe:hover:-translate-y-1 ${
-                        item.done ? 'bg-surface-sunken hover:bg-surface' : 'bg-brand-subtle hover:bg-surface'
-                      }`}
-                    >
-                      <span
-                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                          item.done ? 'bg-accent text-on-accent' : 'bg-brand text-on-brand'
-                        }`}
-                      >
-                        {item.done ? (
-                          <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden="true" />
-                        ) : (
-                          <Clock3 className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />
-                        )}
-                      </span>
-                      <span className="font-medium">{item.label}</span>
-                      <span className="sr-only">{item.done ? 'done' : 'in progress'}</span>
-                    </li>
+              <div data-hero-row className="mt-2 flex flex-col gap-3 rounded-md bg-brand-subtle px-3.5 py-4">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="text-sm font-medium">Qualified meetings this cycle</span>
+                  <span className="font-display text-xl font-semibold tracking-[-0.02em]">
+                    {meetings.length} <span className="text-sm font-medium text-text-muted">of {MEETINGS_PER_CYCLE}</span>
+                  </span>
+                </div>
+                <div
+                  role="img"
+                  aria-label={`${meetings.length} of ${MEETINGS_PER_CYCLE} guaranteed meetings booked`}
+                  className="grid gap-1"
+                  style={{ gridTemplateColumns: `repeat(${MEETINGS_PER_CYCLE}, minmax(0, 1fr))` }}
+                >
+                  {Array.from({ length: MEETINGS_PER_CYCLE }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`h-2 rounded-full ${i < meetings.length ? 'bg-mint-500' : 'bg-surface'}`}
+                    />
                   ))}
-                </ul>
+                </div>
               </div>
+
+              <p data-hero-row className="mt-4 flex items-start gap-2.5 text-sm text-text-secondary">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-text" aria-hidden="true" />
+                <span>
+                  Short of {MEETINGS_PER_CYCLE}?{' '}
+                  <span className="font-semibold text-text">{usd(REFUND_PER_MEETING)} back</span> for each one
+                  missing.
+                </span>
+              </p>
             </div>
             <div
               data-hero-booked
@@ -211,31 +233,32 @@ export function Hero() {
               Your calendar
             </span>
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-inverse-text-muted">
-              This week
+              This cycle · {meetings.length} of {MEETINGS_PER_CYCLE}
             </span>
           </div>
 
           <div
             className="grid grid-cols-[2.25rem_repeat(5,minmax(0,1fr))] gap-1.5"
             role="img"
-            aria-label={`A week with ${meetings.length} sales calls booked`}
+            aria-label={`A 30-day cycle with ${meetings.length} qualified sales calls booked`}
           >
             <span aria-hidden="true" />
-            {days.map((d, i) => (
-              <span
-                key={d}
-                className={`rounded-md py-1 text-center text-xs font-semibold ${
-                  i === TODAY ? 'bg-brand text-on-brand' : 'text-inverse-text-muted'
-                }`}
-              >
+            {days.map((d) => (
+              <span key={d} className="py-1 text-center text-xs font-semibold text-inverse-text-muted">
                 {d}
               </span>
             ))}
-            {slots.map((time, slot) => (
-              <Fragment key={time}>
-                <span className="flex items-start pt-1 text-[10px] text-inverse-text-muted">{time}</span>
+            {weeks.map((label, week) => (
+              <Fragment key={label}>
+                <span
+                  className={`flex items-start pt-1 text-[10px] ${
+                    week === CURRENT_WEEK ? 'font-semibold text-accent' : 'text-inverse-text-muted'
+                  }`}
+                >
+                  {label}
+                </span>
                 {days.map((d, day) => {
-                  const m = meetings.find((x) => x.day === day && x.slot === slot);
+                  const m = meetings.find((x) => x.week === week && x.day === day);
                   return (
                     <span key={d} className="flex min-h-12 rounded-md bg-white/[0.04] p-1 sm:min-h-14">
                       {m && (
@@ -258,7 +281,7 @@ export function Hero() {
 
           <div className="flex flex-col gap-1 border-t border-white/10 pt-5">
             <span className="heading-3">
-              Sales calls, <span className="text-accent">booked for you.</span>
+              {MEETINGS_PER_CYCLE} sales calls a month, <span className="text-accent">booked for you.</span>
             </span>
             <figcaption className="text-sm text-inverse-text-muted">
               We handle the replies and the scheduling. You just show up.

@@ -39,7 +39,7 @@
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Sprint tab auto-rotation. Keep the duration in sync with ROTATE_MS in Services.tsx. */
+  /* Service tab auto-rotation. Keep the duration in sync with ROTATE_MS in Services.tsx. */
   --animate-tab-progress: tab-progress 3.5s linear forwards;
   @keyframes tab-progress {
     from {

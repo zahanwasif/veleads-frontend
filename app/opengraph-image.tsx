@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { MEETINGS_PER_CYCLE } from '@/lib/guarantee';
 
 // Social share card (also used for Twitter/X via the metadata in layout.tsx).
-export const alt = 'Veleads. Stop prospecting. Start taking sales calls.';
+export const alt = 'Veleads. You close the deals. We fill your calendar.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -31,11 +32,11 @@ export default function Image() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={{ display: 'flex', flexDirection: 'column', fontSize: 84, fontWeight: 700, lineHeight: 1.02, letterSpacing: -3 }}>
-            <span>Stop prospecting.</span>
-            <span style={{ color: '#5EEAD4' }}>Start taking sales calls.</span>
+            <span>You close the deals.</span>
+            <span style={{ color: '#5EEAD4' }}>We fill your calendar.</span>
           </div>
           <div style={{ fontSize: 32, color: '#C9CBEA' }}>
-            The 90-Day Pipeline Sprint for B2B AI &amp; SaaS founders.
+            {`${MEETINGS_PER_CYCLE} qualified sales calls a month, or cash back.`}
           </div>
         </div>
       </div>

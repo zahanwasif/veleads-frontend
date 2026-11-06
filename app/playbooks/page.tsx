@@ -10,7 +10,7 @@ import { getService } from '@/lib/services';
 
 const title = 'Playbooks | Veleads';
 const description =
-  'The outbound and LinkedIn playbooks we run for B2B AI & SaaS founders, written up step by step so you can see exactly how the sprint works.';
+  'The outbound and LinkedIn playbooks we run for B2B founders, written up step by step so you can see exactly how we work.';
 
 export const metadata: Metadata = {
   title,
@@ -42,7 +42,7 @@ export default async function PlaybooksPage() {
               How we build pipeline, <span className="text-brand-text">step by step.</span>
             </h1>
             <p className="lead max-w-[38rem] text-text-secondary max-md:text-[1.0625rem] max-md:leading-relaxed">
-              The playbooks we run for B2B AI &amp; SaaS founders, written up in full. Use them yourself, or let us run
+              The playbooks we run for B2B founders, written up in full. Use them yourself, or let us run
               them for you.
             </p>
           </div>

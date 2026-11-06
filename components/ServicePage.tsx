@@ -1,5 +1,6 @@
 import { ArrowUpRight, Check, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { MEETINGS_PER_CYCLE } from '@/lib/guarantee';
 import { offers } from '@/lib/offers';
 import { services, type Service } from '@/lib/services';
 import { BookCallLink } from './BookCallLink';
@@ -155,20 +156,20 @@ export function ServicePage({ service }: { service: Service }) {
         </div>
       </section>
 
-      {/* Cross-sell into the sprint */}
-      <section aria-labelledby="sprint-title" className="pb-16 md:pb-28">
+      {/* Cross-sell into Guaranteed Meetings */}
+      <section aria-labelledby="guaranteed-title" className="pb-16 md:pb-28">
         <div className="container-page">
           <div data-reveal className="grid gap-8 rounded-xl bg-inverse-bg p-7 text-inverse-text md:p-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-end">
             <div className="flex flex-col gap-4">
               <Eyebrow tone="dark" className="self-start">Better together</Eyebrow>
-              <h2 id="sprint-title" className="heading-1 max-w-[32rem]">
-                Run {service.title} with the other two. <span className="text-accent">That&rsquo;s the sprint.</span>
+              <h2 id="guaranteed-title" className="heading-1 max-w-[32rem]">
+                Want all three? <span className="text-accent">With {MEETINGS_PER_CYCLE} meetings a month guaranteed.</span>
               </h2>
               <p className="max-w-[32rem] text-inverse-text-muted">
-                The 90-Day Pipeline Sprint runs LinkedIn content, signal-based outreach and cold email as one system, with
-                outreach live by day 31. Founding rate from $3,000.
+                Guaranteed Meetings runs LinkedIn content, signal-based outreach and cold email as one system. LinkedIn
+                is live in 3 days, email in 21, then {MEETINGS_PER_CYCLE} qualified sales calls every 30 days, or cash back.
               </p>
-              <Button href="/#pricing" variant="light" label="See sprint pricing" className="mt-2 self-start" />
+              <Button href="/guaranteed-meetings" variant="light" label="See Guaranteed Meetings" className="mt-2 self-start" />
             </div>
             <ul className="flex flex-col gap-2">
               {others.map((s) => (

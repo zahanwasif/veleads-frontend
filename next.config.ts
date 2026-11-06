@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   // Without this, a phone at http://<your-mac-ip>:3000 renders the HTML but runs no JavaScript.
   // Update the IP if your Mac's address on the network changes.
   allowedDevOrigins: ["192.168.100.130"],
+  // The 90-Day Pipeline Sprint became Guaranteed Meetings; keep old links and rankings working.
+  async redirects() {
+    return [{ source: "/pipeline-sprint", destination: "/guaranteed-meetings", permanent: true }];
+  },
 };
 
 // Playbooks are MDX files in content/playbooks. Plugins are named as strings so they work with Turbopack:

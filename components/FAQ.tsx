@@ -1,24 +1,40 @@
-import { KeyRound, Plus, RefreshCw } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import {
+  EMAIL_LIVE_DAY,
+  FOUNDING_SPOTS,
+  LATE_REFUND_CAP,
+  LATE_REFUND_PER_WEEK,
+  LINKEDIN_LIVE_DAY,
+  MEETINGS_PER_CYCLE,
+  MIN_MONTHS,
+  MONTHLY_FEE,
+  OFFER_NAME,
+  ONBOARDING_FEE,
+  REFUND_DAYS,
+  REFUND_PER_MEETING,
+  usd,
+} from '@/lib/guarantee';
 import { BookDemoButton } from './BookDemoButton';
 
-const NOTICE_DAYS = 30;
+const meetingDefinition = `A call that actually happens with someone who matches the ideal customer we signed off with you in onboarding: the right title, company size and industry. No-shows don't count, and we rebook them. If the person matches and you decide on the call they're not for you, it still counts.`;
 
-const faqs = [
+const refundAnswer = `For every qualified meeting short of ${MEETINGS_PER_CYCLE} in a 30-day cycle, we pay back ${usd(REFUND_PER_MEETING)} (your monthly fee divided by ${MEETINGS_PER_CYCLE}) in cash, within ${REFUND_DAYS} days of the cycle ending.`;
+
+// Homepage questions: about working with us at all.
+const homeFaqs = [
   {
-    q: 'What does it cost?',
-    a: '$4,500 per 90-day sprint. The next 3 companies get a founding rate of $3,000. Tools (data, sending and LinkedIn tools) are billed at cost and paid directly to the vendors.',
+    q: 'What do you actually do?',
+    a: 'We run LinkedIn content, signal-based LinkedIn outreach and cold email for B2B founders. We work out who to sell to, write and send the messages, handle the replies and book the calls on your calendar.',
   },
   {
-    q: 'Will I get meetings in the first month?',
-    a: 'Few, by design. Days 1–30 are for research and warming up your profile, mailboxes and lists. Outreach goes live by day 31, and if it isn’t, your next month is free.',
+    q: 'Do you really guarantee meetings?',
+    a: `Yes, on ${OFFER_NAME}: ${MEETINGS_PER_CYCLE} qualified meetings every 30 days once your campaigns are live, or cash back for each one we miss. That's why we only take founders who pass our bar.`,
   },
+  { q: 'What counts as a qualified meeting?', a: meetingDefinition },
+  { q: 'How does the refund work?', a: refundAnswer },
   {
-    q: 'Do you guarantee meetings?',
-    a: 'No. We promise what we control (setup, targeting, volume and message quality) and report replies and meetings every week. Guarantees push agencies toward spam.',
-  },
-  {
-    q: 'What do you need from me?',
-    a: 'Access to your CRM and LinkedIn profile, a calendar link and someone to take the calls, one 30-minute content interview a month, and feedback on copy within 2 business days.',
+    q: 'What if I don’t qualify?',
+    a: 'You can still work with us on LinkedIn Content, LinkedIn Outreach or Email Outbound on their own. They don’t come with the meeting guarantee.',
   },
   {
     q: 'Is it safe for my LinkedIn account and domain?',
@@ -29,61 +45,61 @@ const faqs = [
     a: 'AI drafts; people decide. A strategist reviews every message before it goes out, and you approve every post.',
   },
   {
-    q: 'What if I’m not sure who my ICP is?',
-    a: 'That’s what the sprint is for. We start with 3–4 candidates and let real replies pick the winner.',
-  },
-  {
-    q: 'Can I buy just one piece?',
-    a: 'Yes. LinkedIn Content, LinkedIn Outreach and Email Outbound are also available on their own.',
-  },
-  {
-    q: 'Who owns everything?',
-    a: 'You do. Domains, mailboxes, LinkedIn presence, lists, automations and content all stay in your name.',
+    q: 'Who owns the accounts and lists?',
+    a: 'You do. Domains, mailboxes, LinkedIn presence, lists and content all stay in your name.',
   },
 ];
 
-const choices = [
+// Offer page questions: the price, the guarantee and the fine print.
+const offerFaqs = [
   {
-    icon: RefreshCw,
-    title: 'Keep us on',
-    body: `Month to month, same system, same team. Stop with ${NOTICE_DAYS} days’ notice.`,
-    tone: 'bg-brand text-on-brand',
+    q: 'What does it cost?',
+    a: `${usd(ONBOARDING_FEE)} for onboarding, then ${usd(MONTHLY_FEE)} a month from the day both channels are live, with a ${MIN_MONTHS}-month minimum. All tools are included. The first ${FOUNDING_SPOTS} founders get the onboarding fee waived in exchange for a case study.`,
   },
   {
-    icon: KeyRound,
-    title: 'Take the keys',
-    body: 'We hand over every account, list and automation, plus a written playbook and a handover call.',
-    tone: 'bg-accent text-on-accent',
+    q: 'When do meetings start?',
+    a: `LinkedIn outreach goes live by day ${LINKEDIN_LIVE_DAY} and replies start soon after. Email goes live by day ${EMAIL_LIVE_DAY}, and that's when the first 30-day guarantee cycle starts.`,
+  },
+  { q: 'What counts as a qualified meeting?', a: meetingDefinition },
+  { q: 'How does the refund work?', a: refundAnswer },
+  {
+    q: 'What if you’re late going live?',
+    a: `We refund ${usd(LATE_REFUND_PER_WEEK)} of the onboarding fee for every week we miss day ${LINKEDIN_LIVE_DAY} for LinkedIn or day ${EMAIL_LIVE_DAY} for email, up to ${usd(LATE_REFUND_CAP)}. You don't pay a monthly fee until both are live.`,
+  },
+  {
+    q: 'What do you need from me?',
+    a: `About an hour a week: approve messages and posts within 48 hours, read the weekly report and join a 30-minute call every two weeks. We need LinkedIn and calendar access by day ${LINKEDIN_LIVE_DAY}, and someone to take the calls.`,
+  },
+  {
+    q: 'When doesn’t the guarantee apply?',
+    a: 'In a cycle where approvals take longer than 48 hours, booked calls are missed and not rebooked within a week, or access arrives late. Changing your ideal customer mid-cycle restarts that cycle, and pausing (for holidays, say) pauses the clock.',
+  },
+  {
+    q: `What happens after ${MIN_MONTHS} months?`,
+    a: 'You go month to month and the guarantee carries on. Stop any time with 30 days’ notice.',
+  },
+  {
+    q: 'Is it safe for my LinkedIn account and domain?',
+    a: 'Yes. LinkedIn outreach stays within safe limits (about 100 requests a week), and cold email goes from separate domains, never your main one.',
+  },
+  {
+    q: 'Who owns the accounts and lists?',
+    a: 'You do. Domains, mailboxes, LinkedIn presence, lists and content all stay in your name.',
   },
 ];
 
-export function FAQ() {
+export function FAQ({ variant = 'home' }: { variant?: 'home' | 'offer' }) {
+  const offer = variant === 'offer';
+  const faqs = offer ? offerFaqs : homeFaqs;
   return (
     <section id="faq" aria-labelledby="faq-title" className="pb-16 md:pb-36">
       <div className="container-page grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div>
           <div data-reveal className="flex flex-col gap-8 lg:sticky lg:top-28">
             <h2 id="faq-title" className="heading-1 max-w-[26rem]">
-              Questions founders ask <span className="text-brand-text">before the sprint.</span>
+              Questions founders ask{' '}
+              <span className="text-brand-text">{offer ? 'before signing up.' : 'before working with us.'}</span>
             </h2>
-
-            <div className="flex flex-col gap-4 rounded-xl bg-inverse-bg p-6 text-inverse-text md:p-7">
-              <span className="heading-4">On day 90, you choose.</span>
-              <ul className="flex flex-col gap-3">
-                {choices.map(({ icon: Icon, title, body, tone }) => (
-                  <li key={title} className="flex gap-4 rounded-lg bg-inverse-surface p-4">
-                    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-md ${tone}`}>
-                      <Icon className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
-                    </span>
-                    <span className="flex flex-col gap-1">
-                      <span className="font-semibold">{title}</span>
-                      <span className="text-sm text-inverse-text-muted">{body}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <span className="text-sm text-inverse-text-muted">You own everything either way.</span>
-            </div>
 
             <div className="flex flex-col items-start gap-3">
               <span className="heading-4">Still have a question?</span>

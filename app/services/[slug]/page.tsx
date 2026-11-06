@@ -13,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<'/services/[slug]'>): Promise<Metadata> {
   const service = getService((await params).slug);
   if (!service) return {};
-  const title = `${service.title} for B2B AI & SaaS founders | Veleads`;
+  const title = `${service.title} for B2B founders | Veleads`;
   return {
     title,
     description: service.metaDescription,

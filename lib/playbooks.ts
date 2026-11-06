@@ -20,7 +20,7 @@ export type PlaybookMeta = {
   readingMinutes: number;
 };
 
-// Topics that aren't one of the three services. They fall back to the 90-day plan offer.
+// Topics that aren't one of the three services. They fall back to the pipeline plan offer.
 const GENERAL_TOPICS = { 'gtm-engineering': 'GTM engineering' } as const;
 type GeneralTopic = keyof typeof GENERAL_TOPICS;
 
